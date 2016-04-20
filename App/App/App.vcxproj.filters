@@ -62,6 +62,12 @@
     <ClCompile Include="HestonPrice\Heston.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="HestonPrice\PriceCalc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HestonPrice\testCalc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="app.h">
@@ -84,5 +90,14 @@
     <ClInclude Include="HestonPrice\Heston.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="HestonPrice\PriceCalc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="4FFT\include\fftw3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="4FFT\lib\fftw3.lib" />
   </ItemGroup>
 </Project>
