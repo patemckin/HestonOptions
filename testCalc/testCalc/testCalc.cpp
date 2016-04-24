@@ -30,7 +30,7 @@ int main()
 	double S = 100; //spot price
 	double K = 85; //Strike price
 	double r = 0.00; //Risk-free interest rate
-	double delta = 0; //Dividend yield
+	//double delta = 0; //Dividend yield
 	double tau = 1; //Time to maturity (years)
 	/*
 	double V0 = 0.01; //Initial volatility//trial[0]

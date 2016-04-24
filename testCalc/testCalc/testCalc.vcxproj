@@ -148,7 +148,6 @@
   <ItemGroup>
     <ClCompile Include="DESolver.cpp" />
     <ClCompile Include="DETest.cpp" />
-    <ClCompile Include="PriceCalc.cpp" />
     <ClCompile Include="PriceCalculation.cpp" />
     <ClCompile Include="testCalc.cpp" />
   </ItemGroup>
@@ -156,7 +155,6 @@
     <ClInclude Include="4FFT\include\fftw3.h" />
     <ClInclude Include="DESolver.h" />
     <ClInclude Include="DETest.h" />
-    <ClInclude Include="PriceCalc.h" />
     <ClInclude Include="PriceCalculation.h" />
   </ItemGroup>
   <ItemGroup>

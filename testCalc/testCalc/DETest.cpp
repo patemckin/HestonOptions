@@ -84,9 +84,19 @@ p->S = S;
 //string optType = "call"; //Option type (call or put)
 
 
-double err = callPriceFFT(14, p) - 15.27132646626;
+double price = callPriceFFT(14, p);
 
-std::cout << "Error:" << err << endl;
+
+double err = price - 15.270668799937340;
+
+if (price != price)
+{
+	perror("\n Warning:!!!");
+	cout << endl;
+}
+
+
+std::cout <<"Price:" << price <<"Error:" << err << endl;
 
 	
 return err*err;
