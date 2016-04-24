@@ -87,20 +87,21 @@ p->S = S;
 double price = callPriceFFT(14, p);
 
 
-double err = price - 15.270668799937340;
+double err = (price - 15.27);
 
-if (price != price)
-{
-	perror("\n Warning:!!!");
-	cout << endl;
-}
+//if (price != price)
+//{
+	//perror("\n Warning:!!!");
+	//cout << endl;
+//}
 
 
 std::cout <<"Price:" << price <<"Error:" << err << endl;
 
-	
-return err*err;
+if (fabs(err) / price < 0.01)
+	bAtSolution = true;
 
+return err*err;
 
     
 }

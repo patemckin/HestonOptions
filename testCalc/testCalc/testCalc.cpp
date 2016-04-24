@@ -32,21 +32,8 @@ int main()
 	double r = 0.00; //Risk-free interest rate
 	//double delta = 0; //Dividend yield
 	double tau = 1; //Time to maturity (years)
-	/*
-	double V0 = 0.01; //Initial volatility//trial[0]
-	double thet = 0.01; //Long-run volatility//trial[1]
-	double kappa = 2; //Mean-reversion rate for volatility//trial[2]
-	double SigmaV = 0.225; //Volatility of volatility//trial[3]
-	double rho = 0;//; //Price-volatility correlation//trial[4]
-	double gamma = 0; //Risk-aversion parameter*/
 	PolynomialSolver solver(N_DIM,N_POP);
 
-
-	//for (i=0;i < N_DIM;i++)
-	//{
-	//	max[i] =  1.0;
-	//	min[i] = 0.0;
-	//}
 
 	min[0] = 0;
 	max[0] = 1;
@@ -81,6 +68,9 @@ int main()
 	p->K = K;
 	p->T = tau;
 	p->S = S;
+
+	for (int i = 0; i < 5; ++i)
+		cout << "Param " << i << "\t"<< solution[i] << endl;
 	printf("%lf\n",(callPriceFFT(14, p)));
 
 
