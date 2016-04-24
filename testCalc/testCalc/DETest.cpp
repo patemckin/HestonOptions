@@ -53,7 +53,7 @@ double erf(double z) {
 double PolynomialSolver::EnergyFunction(double *trial,bool &bAtSolution)
 {
     //return erf(4);
-    double S = 100; //spot price
+/*    double S = 100; //spot price
 double K = 85; //Strike price
 double r = 0.00; //Risk-free interest rate
 double delta = 0; //Dividend yield
@@ -64,6 +64,13 @@ double kappa;// = 2; //Mean-reversion rate for volatility//trial[2]
 double SigmaV;// = 0.225; //Volatility of volatility//trial[3]
 double rho;// = 0;//; //Price-volatility correlation//trial[4]
 double gamma = 0; //Risk-aversion parameter
+*/
+	double S = 100; //spot price
+	double K = 85; //Strike price
+	double r = 0.00; //Risk-free interest rate
+	double delta = 0; //Dividend yield
+	double tau = 1; //Time to maturity (years)
+
 params *p = new params;
 p->kappa = trial[2];
 p->theta = trial[1];
@@ -75,7 +82,16 @@ p->K = K;
 p->T = tau;
 p->S = S;
 //string optType = "call"; //Option type (call or put)
-    return pow((callPriceFFT(18, p) -5.00009),2);
+
+
+double err = callPriceFFT(14, p) - 15.27132646626;
+
+std::cout << "Error:" << err << endl;
+
+	
+return err*err;
+
+
     
 }
 
