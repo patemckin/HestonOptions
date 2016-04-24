@@ -21,6 +21,15 @@
     <ClCompile Include="testCalc.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
+    <ClCompile Include="DETest.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+    <ClCompile Include="DESolver.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+    <ClCompile Include="PriceCalculation.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PriceCalc.h">
@@ -28,6 +37,15 @@
     </ClInclude>
     <ClInclude Include="4FFT\include\fftw3.h">
       <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="DESolver.h">
+      <Filter>Файлы исходного кода</Filter>
+    </ClInclude>
+    <ClInclude Include="PriceCalculation.h">
+      <Filter>Файлы исходного кода</Filter>
+    </ClInclude>
+    <ClInclude Include="DETest.h">
+      <Filter>Файлы исходного кода</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
