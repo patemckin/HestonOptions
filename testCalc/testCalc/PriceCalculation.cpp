@@ -1,11 +1,11 @@
 #include "PriceCalculation.h"
 
-double callPriceFFT(int N, params *p)
+double callPriceFFT(int N, double S, double K, double T, double r, double v0, double theta, double kappa, double sigma, double rho)
 {
-    double          lnS = log(p->S);
-    double          lnK = log(p->K);
+    double          lnS = log(S);
+    double          lnK = log(K);
     double          optAlpha = .75;
-    double          discountFactor = exp(-p->r * p->T);
+    double          discountFactor = exp(-r * T);
     uint64_t        FFT_N = pow(2, N);
     double          FFT_eta = 0.05;
     double          FFT_lambda = (2 * M_PI) / (FFT_N * FFT_eta);
@@ -35,17 +35,17 @@ double callPriceFFT(int N, params *p)
         /** Heston_characteristicFn - begin */
         u = cmplx(vj, - (optAlpha + 1));
         alpha = -0.5 * (u * u + u * I);
-        beta = p->kappa - p->rho * p->sigma * u * I;
-        omega2 = p->sigma * p->sigma;
+        beta = kappa - rho * sigma * u * I;
+        omega2 = sigma * sigma;
         gamma = 0.5 * omega2;
         D = sqrt(beta * beta - 4.0 * alpha * gamma);
         bD = beta - D;
-        eDt = exp(-D * p->T);
+        eDt = exp(-D * T);
         G = bD / (beta + D);
         B = (bD / omega2) * ((1.0 - eDt) / (1.0 - G * eDt));
         psi = (G * eDt - 1.0) / (G - 1.0);
-        A = ((p->kappa * p->theta) / (omega2)) * (bD * p->T - 2.0 * log(psi));
-        phi = A + B * p->v0 + I * u * (lnS + p->r * p->T);
+        A = ((kappa * theta) / (omega2)) * (bD * T - 2.0 * log(psi));
+        phi = A + B * v0 + I * u * (lnS + r * T);
         /** Heston_characteristicFn - end */
 
         tmp = discountFactor * exp(phi) / (optAlpha * optAlpha + optAlpha - vj * vj +
