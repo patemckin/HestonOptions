@@ -66,7 +66,7 @@ int main()
 	p->K = K;
 	p->T = tau;
 	p->S = S;
-	printf("%lf\n",(callPriceFFT(18, p)));
+	printf("%lf\n",(callPriceFFT(14, p)));
 
 
 

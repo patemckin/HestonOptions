@@ -1,13 +1,14 @@
 #ifndef PRICECALCULATION_H_INCLUDED
 #define PRICECALCULATION_H_INCLUDED
 
+#define _USE_MATH_DEFINES
 #include <iostream>
 #include <complex>
 #include <cmath>
 #include <vector>
 #include "4FFT\include\fftw3.h"
 
-#define _USE_MATH_DEFINES
+
 
 using namespace std;
 
