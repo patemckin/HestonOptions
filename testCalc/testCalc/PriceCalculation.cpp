@@ -10,7 +10,8 @@ double callPriceFFT(int N, double S, double K, double T, double r, double v0, do
     double          FFT_eta = 0.05;
     double          FFT_lambda = (2 * M_PI) / (FFT_N * FFT_eta);
     double          FFT_b = (FFT_N * FFT_lambda) / 2;
-    double          jvec, vj, omega2, gamma, *ku, *cpvec;
+    double          vj, omega2, gamma, *ku, *cpvec;
+	int				jvec;
     cmplx           u, alpha, beta, D, bD, eDt, G, B, psi, A, phi, tmp;
     fftw_complex    *fftFunc, *out;
     fftw_plan       plan_forward;
@@ -51,8 +52,8 @@ double callPriceFFT(int N, double S, double K, double T, double r, double v0, do
         tmp = discountFactor * exp(phi) / (optAlpha * optAlpha + optAlpha - vj * vj +
                             I * (2.0 * optAlpha + 1) * vj) * exp(I * vj * (FFT_b)) * FFT_eta;
 
-        fftFunc[i][0] = real((tmp / 3.0) * (3.0 + pow((-1), jvec) - ((jvec - 1) == 0)));
-        fftFunc[i][1] = imag((tmp / 3.0) * (3.0 + pow((-1), jvec) - ((jvec - 1) == 0)));
+        fftFunc[i][0] = real((tmp / 3.0) * (3.0 + (jvec % 2 ? -1 : 1)/*pow((-1), jvec)*/ - ((jvec - 1) == 0)));
+        fftFunc[i][1] = imag((tmp / 3.0) * (3.0 + (jvec % 2 ? -1 : 1)/*pow((-1), jvec)*/ - ((jvec - 1) == 0)));
     }
 
     plan_forward = fftw_plan_dft_1d(FFT_N, fftFunc, out, FFTW_FORWARD, FFTW_ESTIMATE);

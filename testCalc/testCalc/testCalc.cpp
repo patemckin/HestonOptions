@@ -12,10 +12,6 @@ int main()
 	double min[N_DIM] = { 0,0,0,0,-1 };
 	double max[N_DIM] = { 1,50,1,1,1 };
 	int i;
-	double S = 100; //spot price
-	double K = 85; //Strike price
-	double r = 0.00; //Risk-free interest rate
-	double T = 1; //Time to maturity (years)
 
 	vector<optionParams> data(3);
 
@@ -34,18 +30,7 @@ int main()
 	for (int i = 0; i < 5; ++i)
 		cout << "Param " << i << "\t"<< solution[i] << endl;
 
-	cout << solver.Energy();
-
-	printf("%lf\n",(callPriceFFT(14,S,K,T,r, solution[0], solution[1], solution[2], solution[3], solution[4])));
-
-
-
-
-
-  // cout << kek << " !!";
-    //double kek = sol->hestonCallFftTimeValue(85.);
-
-    //delete sol;
+	cout <<"OLE Error:" << sqrt(solver.Energy())/data.size();
 
     return 0;
 }
