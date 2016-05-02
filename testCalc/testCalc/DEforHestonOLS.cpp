@@ -3,7 +3,7 @@
 #include <String>
 #include "DESolver.h"
 #include "PriceCalculation.h"
-#include "DEforHestonOLE.h"
+#include "DEforHestonOLS.h"
 
 DEforHestonOLE::DEforHestonOLE(double _min[], double _max[], vector <optionParams> data) : DESolver(N_DIM, N_POP), count(0), marketData(data) {
 	for (int i = 0; i < N_DIM; ++i)
@@ -13,12 +13,12 @@ DEforHestonOLE::DEforHestonOLE(double _min[], double _max[], vector <optionParam
 		this->Setup(min, max, stBest1Exp, 0.9, 1.0);
 	}
 
-	double sumPrice = 0;
+	absErr = 0;
 	for each (optionParams option in data)
 	{
-		sumPrice += option.price;
+		absErr += fabs((option.bid - option.ask)); // for OLS with weights
 	}
-	meanPrice = sumPrice / data.size();
+	cout << absErr<<endl;
 }
 
 
@@ -32,23 +32,26 @@ double DEforHestonOLE::EnergyFunction(double *trial, bool &bAtSolution)
 	{
 		if (trial[i] > max[i] || trial[i] < min[i])
 			return 1e21;
+		
 	}
+	if (2 * trial[1] * trial[2] <= trial[3]) // Fellers condition
+		return 1e21;
 
-
-	// Caclulate OLE error
+	// Caclulate OLS error
 	double err = 0;
 	double price;
-	//cout << "Prices:\t";
+
+
+	// OLS with weights 
 	for (int i = 0; i < marketData.size(); ++i) {
 		price = callPriceFFT(12, marketData[i].S, marketData[i].K, marketData[i].T, marketData[i].r, trial[0], trial[1], trial[2], trial[3], trial[4]);
-	//	cout << price << " | ";
-		err += (marketData[i].price - price)*(marketData[i].price - price);
+		err += pow((marketData[i].price - price),(unsigned int)2) / fabs(marketData[i].ask - marketData[i].bid); 
 	}
 
-	cout << endl << "Current OLE error:  " << sqrt(err) << endl;
+	cout << endl << "Current OLE error:  " << err << endl;
 
 	// check if it is nice
-	if (sqrt(err) / marketData.size()/meanPrice < 0.01)
+	if (err < absErr)
 		bAtSolution = true;
 
 	return err;

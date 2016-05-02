@@ -1,12 +1,23 @@
 #include "PriceCalculation.h"
 
+
+double pow(double m, unsigned int n) {
+	if (m == -1)
+		return n % 2 ? -1 : 1;
+	double result = 1;
+	for (int i = 0; i < n; ++i)
+		result = result * m;
+	return result;
+}
+
+
 double callPriceFFT(int N, double S, double K, double T, double r, double v0, double theta, double kappa, double sigma, double rho)
 {
     double          lnS = log(S);
     double          lnK = log(K);
     double          optAlpha = .75;
     double          discountFactor = exp(-r * T);
-    uint64_t        FFT_N = pow(2, N);
+    uint64_t        FFT_N = pow(2.0, N);
     double          FFT_eta = 0.05;
     double          FFT_lambda = (2 * M_PI) / (FFT_N * FFT_eta);
     double          FFT_b = (FFT_N * FFT_lambda) / 2;
@@ -52,8 +63,8 @@ double callPriceFFT(int N, double S, double K, double T, double r, double v0, do
         tmp = discountFactor * exp(phi) / (optAlpha * optAlpha + optAlpha - vj * vj +
                             I * (2.0 * optAlpha + 1) * vj) * exp(I * vj * (FFT_b)) * FFT_eta;
 
-        fftFunc[i][0] = real((tmp / 3.0) * (3.0 + (jvec % 2 ? -1 : 1)/*pow((-1), jvec)*/ - ((jvec - 1) == 0)));
-        fftFunc[i][1] = imag((tmp / 3.0) * (3.0 + (jvec % 2 ? -1 : 1)/*pow((-1), jvec)*/ - ((jvec - 1) == 0)));
+        fftFunc[i][0] = real((tmp / 3.0) * (3.0 + pow((-1.), jvec) - ((jvec - 1) == 0)));
+        fftFunc[i][1] = imag((tmp / 3.0) * (3.0 + pow((-1.), jvec) - ((jvec - 1) == 0)));
     }
 
     plan_forward = fftw_plan_dft_1d(FFT_N, fftFunc, out, FFTW_FORWARD, FFTW_ESTIMATE);
