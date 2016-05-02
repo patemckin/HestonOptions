@@ -32,17 +32,20 @@
     <ClInclude Include="4FFT\include\fftw3.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
+    <ClInclude Include="DEforHestonOLE.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
     <ClInclude Include="DESolver.h">
-      <Filter>Файлы исходного кода</Filter>
+      <Filter>Заголовочные файлы</Filter>
     </ClInclude>
     <ClInclude Include="PriceCalculation.h">
-      <Filter>Файлы исходного кода</Filter>
-    </ClInclude>
-    <ClInclude Include="DEforHestonOLE.h">
-      <Filter>Файлы исходного кода</Filter>
+      <Filter>Заголовочные файлы</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Library Include="4FFT\lib\fftw3.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="fftw3.dll" />
   </ItemGroup>
 </Project>

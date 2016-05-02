@@ -8,14 +8,12 @@
 #include <vector>
 #include "4FFT\include\fftw3.h"
 
-
-
 using namespace std;
 
 typedef complex<double> cmplx;
 
 #define I cmplx(0, 1)
 
-double callPriceFFT(int N, double S,double K,double T,double r,double v0,double theta,double kappa,double sigma,double rho);
+double callPriceFFT(int N, double S, double K, double T, double r, double v0, double theta, double kappa, double sigma, double rho);
 
 #endif // PRICECALCULATION_H_INCLUDED
