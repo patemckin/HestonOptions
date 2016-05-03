@@ -148,14 +148,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DESolver.cpp" />
-    <ClCompile Include="DEforHestonOLE.cpp" />
+    <ClCompile Include="DEforHestonOLS.cpp" />
     <ClCompile Include="PriceCalculation.cpp" />
     <ClCompile Include="testCalc.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="4FFT\include\fftw3.h" />
     <ClInclude Include="DESolver.h" />
-    <ClInclude Include="DEforHestonOLE.h" />
+    <ClInclude Include="DEforHestonOLS.h" />
     <ClInclude Include="PriceCalculation.h" />
   </ItemGroup>
   <ItemGroup>

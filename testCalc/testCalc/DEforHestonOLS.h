@@ -9,7 +9,9 @@ struct optionParams{
 	double K; //strike
 	double T; //time to expiration
 	double r; // current interest rate
-	double price; // current price
+	double bid; // current bid
+	double ask; // current ask
+	double price; // current price = (bid-ask)/2
 };
 
 
@@ -23,6 +25,7 @@ private:
 	int count;
 	double min[N_DIM];
 	double max[N_DIM];
-	double meanPrice;
+	//double meanPrice;
+	double absErr;
 	vector <optionParams> marketData;
 };
