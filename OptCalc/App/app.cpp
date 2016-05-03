@@ -128,6 +128,11 @@ void App::parHandWrite_checked()
 	ui.kappa_Line->clear();
 	ui.sigma_Line->clear();
 	ui.rho_Line->clear();
+	ui.v0_Line->setReadOnly(false);
+	ui.theta_Line->setReadOnly(false);
+	ui.kappa_Line->setReadOnly(false);
+	ui.sigma_Line->setReadOnly(false);
+	ui.rho_Line->setReadOnly(false);
 
 	ui.Opt_Line->clear();
 }
