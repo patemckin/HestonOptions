@@ -27,6 +27,9 @@
     <ClCompile Include="DEforHestonOLS.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
+    <ClCompile Include="DELIB.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="4FFT\include\fftw3.h">
@@ -39,6 +42,9 @@
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
     <ClInclude Include="DEforHestonOLS.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="DELIB.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
   </ItemGroup>
