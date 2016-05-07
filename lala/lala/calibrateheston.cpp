@@ -1,37 +1,181 @@
-#include <iostream>
-#include <math.h>
-#include <ga\ga.h>
-#define INSTANTIATE_REAL_GENOME
-#include <ga\GARealGenome.h>
-#include <ga\GAGenome.h>
-//#include <gsl/gsl_rng.h>
-//#include <gsl/gsl_randist.h>
-//#include "heston.h"
-#include "PriceCalculation.h"
+#include "calibrateheston.h"
+
 
 #define MAX0(a) (a > 0.0 ? a : 0.0)
 
 using namespace std;
 
+
+
 //const gsl_rng_type* rng_type;
 //gsl_rng* rng;
 
-float objective(GAGenome&);
 //void simulate(double, double, double, double, double);
 
-int main (int argc, char * argv[]) {
+/* ѕоправить тут ввод функции objective в solve() и будет работать
+class GASolver //мать его за ногу
+{
+	vector <optionParams> data;
+	double crossProb = 0.9;
+	int popSize = 10;
+	public:
+		void set_data(vector <optionParams> data, double crossProb, int popSize)
+		{
+			this->data = data;
+			this->crossProb = crossProb;
+			this->popSize = popSize;
+		}
+		float objective(GAGenome& g)
+		{
+			GARealGenome& genome = (GARealGenome&)g;
+			float price = 0;
+			float err = 0;
+						for (int i = 0; i < data.size(); ++i) {
+				price = callPriceFFT(12, data[i].S, data[i].K, data[i].T, data[i].r, genome.gene(0), genome.gene(1), (genome.gene(2) + genome.gene(3) * genome.gene(3))
+					/ (2 * genome.gene(1)), genome.gene(3), genome.gene(4));
+				err += (data[i].price - price)*(data[i].price - price);// / fabs(marketData[i].ask - marketData[i].bid);
+			}
+			//err = -err;
+			return err;
+		}
+		marketParams solve()
+		{
+			marketParams toreturn;
+			GARealAlleleSetArray alleles;
+			alleles.add(0, 1);
+			alleles.add(0, 50);
+			alleles.add(0, 50);
+			alleles.add(0, 1);
+			alleles.add(-1, 1);
+
+			GARealGenome genome(alleles, &(GASolver::objective));
+			
+			GAParameterList params;
+			GASteadyStateGA::registerDefaultParameters(params);
+			params.set(gaNnGenerations, 10);
+			params.set(gaNpopulationSize, popSize);
+			params.set(gaNscoreFrequency, 10);
+			params.set(gaNflushFrequency, 50);
+			params.set(gaNpCrossover, crossProb);
+			params.set(gaNpMutation, 0.1);
+			params.set(gaNminimaxi, -1);
+			params.set(gaNselectScores, (int)GAStatistics::AllScores);
+	//		params.parse(argc, argv, gaFalse);	//”х ты, это вообще что такое?
+
+			GASteadyStateGA ga(genome);
+			ga.parameters(params);
+			ga.set(gaNscoreFilename, "bog.log");
+			ga.evolve();
+			//cout << "fit (" << gsl_rng_default_seed << ") " << ga.statistics().minEver() << ", " << sqrt(ga.statistics().minEver()) << endl;
+			//	cout << "the best individual: " << ga.statistics().bestIndividual() << endl;
+
+			GARealGenome& genomeAux = (GARealGenome&)ga.statistics().bestIndividual();
+
+			cout << genomeAux.gene(0) << " lol " << endl;
+			cout << genomeAux.gene(1) << " lol " << endl;
+			cout << (genomeAux.gene(2) + genomeAux.gene(3) * genomeAux.gene(3)) / (2 * genomeAux.gene(1)) << " lol " << endl;
+			cout << genomeAux.gene(3) << " lol " << endl;
+			cout << genomeAux.gene(4) << " lol " << endl;
+
+			toreturn.v0 = genomeAux.gene(0);
+			toreturn.theta = genomeAux.gene(1);
+			toreturn.kappa = genomeAux.gene(2);
+			toreturn.sigma = genomeAux.gene(3);
+			toreturn.rho = genomeAux.gene(4);
+
+			return toreturn;
+		}
+};*/
+
+vector<optionParams> data;
+
+
+/*Ёта функци€ практически дублирует int main. ќна будет принимать на вход историю рынка, 
+параметры дл€ генетического алгоритма - веро€тность кроссовера (а в школе его называли кроссинговером?)
+и размер попул€ции; на выходе, соответственно, будет структурка из п€ти параметров рынка. Ќадеюсь, она будет норм.
+Ќе€сный момент, что делать с массивом параметров рынка, который тут будет передаватьс€ в глобальную переменную - вот этот момент
+самый кос€коверо€тный*/
+marketParams getMarketParams(vector<optionParams> marketData, double crossProb, int popSize)
+{
+	::data.clear();
+	::data = marketData;
+	marketParams toreturn;
+	GARealAlleleSetArray alleles;
+	alleles.add(0, 1);
+	alleles.add(0, 50);
+	alleles.add(0, 50);
+	alleles.add(0, 1);
+	alleles.add(-1, 1);
+
+	GARealGenome genome(alleles, objective);
+
+	GAParameterList params;
+	GASteadyStateGA::registerDefaultParameters(params);
+	params.set(gaNnGenerations, 10);
+	params.set(gaNpopulationSize, popSize);
+	params.set(gaNscoreFrequency, 10);
+	params.set(gaNflushFrequency, 50);
+	params.set(gaNpCrossover, crossProb);
+	params.set(gaNpMutation, 0.1);
+	params.set(gaNminimaxi, -1);
+	params.set(gaNselectScores, (int)GAStatistics::AllScores);
+	//		params.parse(argc, argv, gaFalse);	//”х ты, это вообще что такое?
+
+	GASteadyStateGA ga(genome);
+	ga.parameters(params);
+	ga.set(gaNscoreFilename, "bog.log");
+	ga.evolve();
+	//cout << "fit (" << gsl_rng_default_seed << ") " << ga.statistics().minEver() << ", " << sqrt(ga.statistics().minEver()) << endl;
+	//	cout << "the best individual: " << ga.statistics().bestIndividual() << endl;
+
+	GARealGenome& genomeAux = (GARealGenome&)ga.statistics().bestIndividual();
+
+	cout << genomeAux.gene(0) << " lol " << endl;
+	cout << genomeAux.gene(1) << " lol " << endl;
+	cout << (genomeAux.gene(2) + genomeAux.gene(3) * genomeAux.gene(3)) / (2 * genomeAux.gene(1)) << " lol " << endl;
+	cout << genomeAux.gene(3) << " lol " << endl;
+	cout << genomeAux.gene(4) << " lol " << endl;
+
+	toreturn.v0 = genomeAux.gene(0);
+	toreturn.theta = genomeAux.gene(1);
+	toreturn.kappa = genomeAux.gene(2);
+	toreturn.sigma = genomeAux.gene(3);
+	toreturn.rho = genomeAux.gene(4);
+
+	return toreturn;
+}
+
+
+
+
+
+/*int main (int argc, char * argv[]) {
 
 	//gsl_rng_env_setup();
 	//rng_type = gsl_rng_default;
 	//rng = gsl_rng_alloc (rng_type);
 	
+	vector<optionParams> data(1);
+
+	data[0].r = 2.2685; data[0].T = 0.126027;  data[0].S = 1544.50;  data[0].K = 1000.00; data[0].price = 559.00; data[0].bid = 553.00; data[0].ask = 565.00;
+	//data[1].r = 2.2685; data[1].T = 0.126027;  data[1].S = 1544.50;  data[1].K = 1050.00; data[1].price = 509.50; data[1].bid = 503.50; data[1].ask = 515.50;
+	//data[2].r = 2.2685; data[2].T = 0.126027;  data[2].S = 1544.50;  data[2].K = 1100.00; data[2].price = 460.00; data[2].bid = 454.00; data[2].ask = 466.00;
+
+
 	GARealAlleleSetArray alleles;
-	alleles.add(1, 10);
-	alleles.add(0.001, 0.5);
+	alleles.add(0, 1);
+	alleles.add(0, 50);
+	alleles.add(0, 50);
+	alleles.add(0, 1);
 	alleles.add(-1, 1);
-	alleles.add(0.001, 1);
-	alleles.add(0.001, 1);
-	GARealGenome genome(alleles, objective);
+	
+
+	//GASolver solver;
+	//solver.set_data(data, 0.9, 10);
+	//solver.solve();
+	//float(*my_func_ptr)(GAGenome& g) = objective_cheat.objective;
+
+	/*GARealGenome genome(alleles, objective);
 	
 	GAParameterList params;
 	GASteadyStateGA::registerDefaultParameters(params);
@@ -43,7 +187,7 @@ int main (int argc, char * argv[]) {
 	params.set(gaNpMutation, 0.1);
 	params.set(gaNminimaxi, -1);
 	params.set(gaNselectScores, (int)GAStatistics::AllScores);
-	params.parse(argc, argv, gaFalse);
+	params.parse(argc, argv, gaFalse);		//ух ты, а что же это такое? нипан€тна
 
 	GASteadyStateGA ga(genome);
 	ga.parameters(params);
@@ -60,15 +204,20 @@ int main (int argc, char * argv[]) {
 //	printf("par (%lu) v0     = %.10f\n", gsl_rng_default_seed, genomeAux.gene(4));
 	// simulate(genomeAux.gene(0), genomeAux.gene(1), genomeAux.gene(2), genomeAux.gene(3), genomeAux.gene(4));
 	
+	cout << genomeAux.gene(0) << " lol " << endl;
 	cout << genomeAux.gene(1) << " lol " << endl;
+	cout << (genomeAux.gene(2) + genomeAux.gene(3) * genomeAux.gene(3))/(2 * genomeAux.gene(1)) << " lol " << endl;
+	cout << genomeAux.gene(3) << " lol " << endl;
+	cout << genomeAux.gene(4) << " lol " << endl;
+	*/
+ //   return 0;
+//}
 
-    return 0;
-}
-
-float objective(GAGenome& g) {
+float objective(GAGenome& g)//, vector <optionParams> data)
+{
 	GARealGenome& genome = (GARealGenome&)g;
 
-	float lambda = genome.gene(0);
+	/*float lambda = genome.gene(0);
 	float eta = genome.gene(1);
 	float rho = genome.gene(2);
 	float vbar = genome.gene(3);
@@ -79,19 +228,29 @@ float objective(GAGenome& g) {
 	float r = 0.1;
 	float q = 0.0;
 	float tau = 1;
-	float sig = 0.2;
+	float sig = 0.2;*/
 	
-
-	if (lambda*vbar*2 > eta*eta) {
+	float price = 0;
+	float err = 0;
+	
+	/*if (lambda*vbar*2 > eta*eta) {
 		return 100.0;
-	} else {
+	} else {*/
 		//double h_call = heston_call(S, K, tau, r, v0, q, lambda, rho, eta, vbar);
 		//double b_call = bsm_call(S, K, tau, r, sig, q);
 		
 		//float fit = h_call - b_call;
+
+		for (int i = 0; i < ::data.size(); ++i) {
+			price = callPriceFFT(12, ::data[i].S, ::data[i].K, ::data[i].T, ::data[i].r, genome.gene(0), genome.gene(1), (genome.gene(2) + genome.gene(3) * genome.gene(3))
+				/ (2 * genome.gene(1)), genome.gene(3), genome.gene(4));
+			err += (::data[i].price - price)*(::data[i].price - price);// / fabs(marketData[i].ask - marketData[i].bid);
+		}
+		//err = -err;
+
 		
-		return fabs(callPriceFFT(12, S, K, 1, r, v0, 0.1, 2, vbar, rho));//fabs(lambda*eta / rho - vbar*v0);//fit*fit;
-	}
+		return err;//fabs(lambda*eta / rho - vbar*v0);//fit*fit;
+	//}
 }
 /*
 void load_data(const char* filename) {

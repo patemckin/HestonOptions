@@ -29,8 +29,21 @@
     <ClInclude Include="PriceCalculation.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
+    <ClInclude Include="calibrateheston.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Library Include="4FFT\lib\fftw3.lib" />
+    <Library Include="..\..\..\..\..\..\..\galib247\112\lib\ga.lib">
+      <Filter>Заголовочные файлы</Filter>
+    </Library>
+    <Library Include="4FFT\lib\fftw3.lib">
+      <Filter>Файлы ресурсов</Filter>
+    </Library>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="fftw3.dll">
+      <Filter>Файлы ресурсов</Filter>
+    </None>
   </ItemGroup>
 </Project>
