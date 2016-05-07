@@ -138,7 +138,7 @@ marketParams getMarketParams(vector<optionParams> marketData, double crossProb, 
 
 	toreturn.v0 = genomeAux.gene(0);
 	toreturn.theta = genomeAux.gene(1);
-	toreturn.kappa = genomeAux.gene(2);
+	toreturn.kappa = (genomeAux.gene(2) + genomeAux.gene(3) * genomeAux.gene(3)) / (2 * genomeAux.gene(1));
 	toreturn.sigma = genomeAux.gene(3);
 	toreturn.rho = genomeAux.gene(4);
 
@@ -149,20 +149,26 @@ marketParams getMarketParams(vector<optionParams> marketData, double crossProb, 
 
 
 
-/*int main (int argc, char * argv[]) {
+int main(int argc, char * argv[]) {
 
 	//gsl_rng_env_setup();
 	//rng_type = gsl_rng_default;
 	//rng = gsl_rng_alloc (rng_type);
-	
-	vector<optionParams> data(1);
 
-	data[0].r = 2.2685; data[0].T = 0.126027;  data[0].S = 1544.50;  data[0].K = 1000.00; data[0].price = 559.00; data[0].bid = 553.00; data[0].ask = 565.00;
+	vector<optionParams> marketdata(1);
+	//Типа нам эти данные пришли извне
+	marketdata[0].r = 2.2685; marketdata[0].T = 0.126027;  marketdata[0].S = 1544.50;  marketdata[0].K = 1000.00; marketdata[0].price = 559.00; marketdata[0].bid = 553.00; marketdata[0].ask = 565.00;
 	//data[1].r = 2.2685; data[1].T = 0.126027;  data[1].S = 1544.50;  data[1].K = 1050.00; data[1].price = 509.50; data[1].bid = 503.50; data[1].ask = 515.50;
 	//data[2].r = 2.2685; data[2].T = 0.126027;  data[2].S = 1544.50;  data[2].K = 1100.00; data[2].price = 460.00; data[2].bid = 454.00; data[2].ask = 466.00;
 
+	//теперь юзаем функцию
 
-	GARealAlleleSetArray alleles;
+	getMarketParams(marketdata, 0.9, 10);
+
+
+	return 0;
+}
+	/*GARealAlleleSetArray alleles;
 	alleles.add(0, 1);
 	alleles.add(0, 50);
 	alleles.add(0, 50);
