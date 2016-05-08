@@ -129,6 +129,7 @@
     <ClInclude Include="4FFT\include\fftw3.h" />
     <ClInclude Include="GeneratedFiles\ui_app.h" />
     <ClInclude Include="PriceCalculation.h" />
+    <ClInclude Include="structs.h" />
     <CustomBuild Include="file_worker.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing file_worker.h...</Message>

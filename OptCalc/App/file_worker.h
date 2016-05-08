@@ -8,17 +8,9 @@
 #include <QDebug>
 #include <QVector>
 #include <QFileInfo>
+#include "structs.h"
 
 #define MAX_FILE_SIZE 102400
-
-struct optionParams
-{
-	double S; //spot
-	double K; //strike
-	double T; //time to expiration
-	double r; // current interest rate
-	double price; // current price
-};
 
 typedef QVector<QVector<double>> Matrix;
 typedef QVector<optionParams> Table;

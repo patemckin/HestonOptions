@@ -7,20 +7,7 @@
 #include "ui_app.h"
 #include "file_worker.h"
 #include "PriceCalculation.h"
-
-typedef struct _dataForFFT
-{
-	unsigned int	N;
-	double			S;
-	double			K;
-	double			r;
-	double			T;
-	double			v0;
-	double			theta;
-	double			kappa;
-	double			sigma;
-	double			rho;
-} PriceFunParams;
+#include "structs.h"
 
 
 class App : public QMainWindow
