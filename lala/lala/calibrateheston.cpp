@@ -25,7 +25,8 @@ marketParams getMarketParams(vector<optionParams> marketData, double crossProb, 
 	GARealGenome genome(alleles, objective);
 
 	GAParameterList params;
-	GASteadyStateGA::registerDefaultParameters(params);
+	GASteadyStateGA::registerDefaultParameters(params
+	);
 	params.set(gaNnGenerations, 10);
 	params.set(gaNpopulationSize, popSize);
 	params.set(gaNscoreFrequency, 10);
