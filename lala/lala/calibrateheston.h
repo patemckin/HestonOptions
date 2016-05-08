@@ -5,9 +5,6 @@
 #define INSTANTIATE_REAL_GENOME
 #include <ga/GARealGenome.h>
 #include <ga/GAGenome.h>
-//#include <gsl/gsl_rng.h>
-//#include <gsl/gsl_randist.h>
-//#include "heston.h"
 #include "PriceCalculation.h"
 #include <vector>
 
@@ -29,5 +26,16 @@ struct marketParams {
 	float rho;
 };
 
+class GodSaveIvankov
+{
+public:	
+	GodSaveIvankov();
+	~GodSaveIvankov();
+	void setData(vector<optionParams> _data);
+	float objective(GAGenome& g);
+private:
+	vector<optionParams> data;
+};
+
 marketParams getMarketParams(vector<optionParams> marketData, double crossProb, int popsize);
-float objective(GAGenome& g);//, vector <optionParams> data);
+float objective(GAGenome& g);
