@@ -22,3 +22,12 @@ typedef struct _optionParams
 	double r; // current interest rate
 	double price; // current price
 } optionParams;
+
+typedef struct _marketParams 
+{
+	float v0;
+	float theta;
+	float kappa;
+	float sigma;
+	float rho;
+} marketParams;

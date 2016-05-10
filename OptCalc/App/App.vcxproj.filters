@@ -62,6 +62,9 @@
     <ClCompile Include="PriceCalculation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="calibrateheston.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="app.h">
@@ -90,11 +93,15 @@
     <ClInclude Include="structs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="calibrateheston.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="fftw3.dll" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="4FFT\lib\fftw3.lib" />
+    <Library Include="GA\lib\ga.lib" />
   </ItemGroup>
 </Project>
