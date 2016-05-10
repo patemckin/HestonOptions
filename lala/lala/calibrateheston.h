@@ -15,7 +15,7 @@ struct optionParams {
 	float r; // current interest rate
 	float bid; // current bid
 	float ask; // current ask
-	float price; // current price = (bid-ask)/2
+	float price; // current price = (bid+ask)/2
 };
 
 struct marketParams {
@@ -26,16 +26,17 @@ struct marketParams {
 	float rho;
 };
 
-class GodSaveIvankov
+class GASolver: GAGenome
 {
 public:	
-	GodSaveIvankov();
-	~GodSaveIvankov();
-	void setData(vector<optionParams> _data);
-	float objective(GAGenome& g);
-private:
-	vector<optionParams> data;
+	GASolver(optionParams * _data, int _size);
+	GASolver();
+	~GASolver();
+	static float objective(GAGenome& g);
+	marketParams getMarketParams(double crossProb, int popSize);
+	 static  optionParams * data;
+	 static int size;
 };
 
-marketParams getMarketParams(vector<optionParams> marketData, double crossProb, int popsize);
-float objective(GAGenome& g);
+//marketParams getMarketParams(vector<optionParams> marketData, double crossProb, int popsize);
+//float objective(GAGenome& g);

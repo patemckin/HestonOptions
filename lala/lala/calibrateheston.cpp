@@ -8,8 +8,8 @@
 
 using namespace std;
 
-vector<optionParams> data;
-
+//vector<optionParams> data;
+/*
 marketParams getMarketParams(vector<optionParams> marketData, double crossProb, int popSize)
 {
 	::data.clear();
@@ -73,30 +73,37 @@ float objective(GAGenome& g)
 
 	return err;
 }
+*/
 
-/*
-GodSaveIvankov::GodSaveIvankov()
+/*GASolver::GASolver(vector<optionParams> _data)
 {
-
+	data = _data;
+}*/
+GASolver::GASolver(optionParams * _data, int _size) {
+	size = _size;
+	data = new optionParams[size];
+	for (int i = 0; i < size; ++i)
+		data[i] = data[i];
 }
 
-GodSaveIvankov::~GodSaveIvankov()
-{
+GASolver::GASolver(){}
 
+GASolver::~GASolver()
+{
+	delete data;
 }
 
-void GodSaveIvankov::setData(vector<optionParams> _data)
+/*void GASolver::setData(vector<optionParams> _data) : data(_data)
 {
-	this->data = _data;
-}
+}*/
 
-float GodSaveIvankov::objective(GAGenome& g)
+float GASolver::objective(GAGenome& g)
 {
 	GARealGenome& genome = (GARealGenome&)g;
 
 	float price = 0;
 	float err = 0;
-	for (size_t i = 0; i < data.size(); ++i)
+	for (size_t i = 0; i < size; ++i)
 	{
 		price = (float)callPriceFFT(12, data[i].S, data[i].K, data[i].T, data[i].r, genome.gene(0), genome.gene(1), (genome.gene(2) + genome.gene(3) * genome.gene(3))
 			/ (2 * genome.gene(1)), genome.gene(3), genome.gene(4));
@@ -106,10 +113,10 @@ float GodSaveIvankov::objective(GAGenome& g)
 	return err;
 }
 
-marketParams getMarketParams(vector<optionParams> marketData, double crossProb, int popSize)
+marketParams GASolver::getMarketParams(double crossProb, int popSize)
 {
-	GodSaveIvankov *GSI = new GodSaveIvankov();
-	GSI->setData(marketData);
+	//GASolver *GSI = new GASolver();
+	//GSI->setData(marketData);
 	
 	//data.clear();
 	//data = marketData;
@@ -121,7 +128,7 @@ marketParams getMarketParams(vector<optionParams> marketData, double crossProb, 
 	alleles.add(0, 1);
 	alleles.add(-1, 1);
 
-	GARealGenome genome(alleles, GodSaveIvankov::objective);
+	GARealGenome genome(alleles, objective);
 
 	GAParameterList params;
 	GASteadyStateGA::registerDefaultParameters(params);
@@ -155,16 +162,17 @@ marketParams getMarketParams(vector<optionParams> marketData, double crossProb, 
 
 	return toreturn;
 }
-*/
 
 
 int main()
 {
-	vector<optionParams> marketdata(1);
+	optionParams marketdata[1];
 	marketdata[0].r = 2.2685; marketdata[0].T = 0.126027;  marketdata[0].S = 1544.50;  marketdata[0].K = 1000.00; marketdata[0].price = 559.00; marketdata[0].bid = 553.00; marketdata[0].ask = 565.00;
 
-	getMarketParams(marketdata, 0.9, 10);
-	
+
+	GASolver solver(marketdata,1);
+	solver.getMarketParams(0.9, 100);
+
 	_getch();
 	return 0;
 }
