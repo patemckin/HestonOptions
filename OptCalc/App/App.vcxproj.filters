@@ -63,7 +63,7 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="calibrateheston.cpp">
-      <Filter>Resource Files</Filter>
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -102,6 +102,5 @@
   </ItemGroup>
   <ItemGroup>
     <Library Include="4FFT\lib\fftw3.lib" />
-    <Library Include="GA\lib\ga.lib" />
   </ItemGroup>
 </Project>

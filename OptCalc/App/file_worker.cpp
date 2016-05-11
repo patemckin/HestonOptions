@@ -143,6 +143,8 @@ Table FileWorker::getTable()
 		res[i].T = arr[i][0];
 		res[i].r = arr[i][5];
 		res[i].price = (arr[i][3] - arr[i][2]) / 2;
+		res[i].bid = arr[i][2];
+		res[i].ask = arr[i][3];
 
 		arr.at(i).~QVector();
 	}

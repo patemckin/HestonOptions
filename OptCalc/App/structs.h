@@ -16,11 +16,13 @@ typedef struct _dataForFFT
 
 typedef struct _optionParams
 {
-	double S; //spot
-	double K; //strike
-	double T; //time to expiration
-	double r; // current interest rate
-	double price; // current price
+	float S; //spot
+	float K; //strike
+	float T; //time to expiration
+	float r; // current interest rate
+	float bid; // current bid
+	float ask; // current ask
+	float price; // current price = (bid+ask)/2
 } optionParams;
 
 typedef struct _marketParams 

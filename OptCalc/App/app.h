@@ -7,6 +7,7 @@
 #include "ui_app.h"
 #include "file_worker.h"
 #include "PriceCalculation.h"
+#include "calibrateheston.h"
 #include "structs.h"
 
 
@@ -24,6 +25,7 @@ private:
 	FileWorker * fw;
 	Table dataForParams;
 	PriceFunParams data;
+	marketParams mp;
 
 private slots:
 	void on_getFileButton_clicked();

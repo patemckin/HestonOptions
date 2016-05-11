@@ -41,6 +41,15 @@ void App::on_getParametersButton_clicked()
 	ui.rho_Line->setReadOnly(false);
 
 	// Все данные для расчета находятся в dataForParam (это QVector<optionParams>, typedef лежит в file_worker.h)
+
+	//vector<optionParams> temp = ;
+	mp = getMarketParams(dataForParams.toStdVector(), 0.9, 100);
+
+	ui.kappa_Line->setText(QString::number(mp.kappa));
+	ui.theta_Line->setText(QString::number(mp.theta));
+	ui.v0_Line->setText(QString::number(mp.v0));
+	ui.sigma_Line->setText(QString::number(mp.sigma));
+	ui.rho_Line->setText(QString::number(mp.rho));
 }
 
 void App::on_getCostButton_clicked()
