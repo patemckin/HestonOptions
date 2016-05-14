@@ -1,6 +1,18 @@
 #include "PriceCalculation.h"
 #pragma comment(lib, "fftw3.lib")
 
+double mypow(double a, int n) {
+	if ((int)a == -1)
+		return (int)a % 2 ? -1 : 1;
+	
+	double res = 1;
+	for (int i = 0; i < n; ++i){
+		res *= a;
+	}
+	return res;
+}
+
+
 double callPriceFFT(int N, double S, double K, double T, double r, double v0, double theta, double kappa, double sigma, double rho)
 {
     double          lnS = log(S);
@@ -20,12 +32,17 @@ double callPriceFFT(int N, double S, double K, double T, double r, double v0, do
     double          x[3], y[3], price;
 
     fftFunc = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * FFT_N);
-    out = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * FFT_N);
-    if (fftFunc == NULL || out == NULL)
-    {
-        cout << "Malloc trouble for fft";
-        return -1;
-    }
+	if (fftFunc == NULL)
+	{ 
+		cout << "Malloc trouble for fft"; // NEED EXCEPTION?
+		return -1;
+	}
+	out = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * FFT_N);
+	if (out == NULL)	{
+		cout << "Malloc trouble for fft"; // NEED EXCEPTION?
+		return -1;
+	}
+
     ku = new double[FFT_N];
     cpvec = new double[FFT_N];
 
@@ -53,8 +70,8 @@ double callPriceFFT(int N, double S, double K, double T, double r, double v0, do
         tmp = discountFactor * exp(phi) / (optAlpha * optAlpha + optAlpha - vj * vj +
                             I * (2.0 * optAlpha + 1) * vj) * exp(I * vj * (FFT_b)) * FFT_eta;
 
-        fftFunc[i][0] = real((tmp / 3.0) * (3.0 + (jvec % 2 ? -1 : 1)/*pow((-1), jvec)*/ - ((jvec - 1) == 0)));
-        fftFunc[i][1] = imag((tmp / 3.0) * (3.0 + (jvec % 2 ? -1 : 1)/*pow((-1), jvec)*/ - ((jvec - 1) == 0)));
+        fftFunc[i][0] = real((tmp / 3.0) * (3.0 + mypow((-1), jvec) - ((jvec - 1) == 0)));
+        fftFunc[i][1] = imag((tmp / 3.0) * (3.0 + mypow((-1.), jvec) - ((jvec - 1) == 0)));
     }
 
     plan_forward = fftw_plan_dft_1d(FFT_N, fftFunc, out, FFTW_FORWARD, FFTW_ESTIMATE);
