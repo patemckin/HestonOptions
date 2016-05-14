@@ -12,6 +12,11 @@
 
 #define MAX0(a) (a > 0.0 ? a : 0.0)
 
+//vector<marketParams> * GASolver:: data;
+
+optionParams * GASolver:: data;
+size_t GASolver::size;
+
 using namespace std;
 /*
 vector<optionParams> data;
@@ -88,6 +93,11 @@ GASolver::GASolver(optionParams * _data, int _size) {
 		data[i] = data[i];
 }
 
+/*GASolver::GASolver(vector <optionParams> _data) {
+	data = new vector<optionParams>(_data);
+}*/
+
+
 GASolver::GASolver(){}
 
 GASolver::~GASolver()
@@ -105,7 +115,7 @@ float GASolver::objective(GAGenome& g)
 	{
 		price = (float)callPriceFFT(12, data[i].S, data[i].K, data[i].T, data[i].r, genome.gene(0), genome.gene(1), (genome.gene(2) + genome.gene(3) * genome.gene(3))
 			/ (2 * genome.gene(1)), genome.gene(3), genome.gene(4));
-		err += (data[i].price - price)*(data[i].price - price);
+		err += pow(data[i].price - price, 2);
 	}
 
 	return err;
