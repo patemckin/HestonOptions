@@ -60,6 +60,12 @@ float GASolver::objective(GAGenome& g)
 
 
 GABoolean GASolver::terminateProcess(GAGeneticAlgorithm & ga) {	if (ga.statistics().minEver() < marketSpread || ga.generation() >= ga.nGenerations())		return gaTrue;	else		return gaFalse;}
+void GAGeneticAlgorithm::step() {
+	//  отправить в интрефейс прогресса, например: generation() / nGenerations();
+}
+
+
+
 
 marketParams GASolver::getMarketParams(double crossProb, int popSize)
 {
