@@ -43,7 +43,11 @@ void App::on_getParametersButton_clicked()
 	// Все данные для расчета находятся в dataForParam (это QVector<optionParams>, typedef лежит в file_worker.h)
 
 	//vector<optionParams> temp = ;
-	mp = getMarketParams(dataForParams.toStdVector(), 0.9, 100);
+	//GASolver 
+	//mp = getMarketParams(dataForParams.toStdVector(), 0.9, 100);
+
+	GASolver solver(dataForParams.toStdVector().data(), dataForParams.toStdVector().size());
+	marketParams mp = solver.getMarketParams(0.9, 100);
 
 	ui.kappa_Line->setText(QString::number(mp.kappa));
 	ui.theta_Line->setText(QString::number(mp.theta));

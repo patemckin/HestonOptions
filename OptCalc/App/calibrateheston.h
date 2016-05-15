@@ -7,36 +7,26 @@
 #include "PriceCalculation.h"
 #include <vector>
 #include "structs.h"
-/*
-struct optionParams {
-	float S; //spot
-	float K; //strike
-	float T; //time to expiration
-	float r; // current interest rate
-	float bid; // current bid
-	float ask; // current ask
-	float price; // current price = (bid+ask)/2
-};
 
-struct marketParams {
-	float v0;
-	float theta;
-	float kappa;
-	float sigma;
-	float rho;
-};
-*/
-class GASolver: GAGenome
+class GASolver: GAGenome 
 {
 public:	
 	GASolver(optionParams * _data, int _size);
-	GASolver();
+	//GASolver::GASolver(vector <optionParams> _data);
 	~GASolver();
-	static float objective(GAGenome& g);
 	marketParams getMarketParams(double crossProb, int popSize);
-	 static  optionParams * data;
-	 static int size;
+	//static  vector<optionParams> * data;
+private:
+	static float objective(GAGenome& g);
+	GABoolean done();
+	static double currentPrice(GAGenome& g, optionParams params);
+	GABoolean GASolver::terminateProcess(GAGeneticAlgorithm & ga);
+	static optionParams * data;
+	static size_t size;
+
+	double marketSpread;
+
 };
 
-marketParams getMarketParams(vector<optionParams> marketData, double crossProb, int popsize);
-float objective(GAGenome& g);
+//marketParams getMarketParams(vector<optionParams> marketData, double crossProb, int popsize);
+//float objective(GAGenome& g);
