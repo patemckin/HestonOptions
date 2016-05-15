@@ -522,6 +522,9 @@
       <height>20</height>
      </rect>
     </property>
+    <property name="text">
+     <string>100</string>
+    </property>
     <property name="readOnly">
      <bool>false</bool>
     </property>
@@ -559,6 +562,9 @@
       <width>121</width>
       <height>20</height>
      </rect>
+    </property>
+    <property name="text">
+     <string>100</string>
     </property>
     <property name="readOnly">
      <bool>false</bool>
@@ -598,6 +604,9 @@
       <height>20</height>
      </rect>
     </property>
+    <property name="text">
+     <string>0.9</string>
+    </property>
     <property name="readOnly">
      <bool>false</bool>
     </property>
@@ -635,6 +644,9 @@
       <width>121</width>
       <height>20</height>
      </rect>
+    </property>
+    <property name="text">
+     <string>0.2</string>
     </property>
     <property name="readOnly">
      <bool>false</bool>
@@ -705,6 +717,9 @@
     </property>
     <property name="maximum">
      <number>20</number>
+    </property>
+    <property name="value">
+     <number>12</number>
     </property>
    </widget>
   </widget>

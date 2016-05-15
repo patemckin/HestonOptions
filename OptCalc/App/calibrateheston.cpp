@@ -5,7 +5,7 @@
 #include <ga/GAGenome.h>
 #include "calibrateheston.h"
 
-
+static int mycount = 0;
 
 #pragma comment(lib, "fftw3.lib")
 
@@ -44,8 +44,11 @@ GASolver::~GASolver(){
 double GASolver::currentPrice(GAGenome& g , optionParams params)
 {
 	GARealGenome& genome = (GARealGenome&)g;
-	return callPriceFFT(N, params.S, params.K, params.T, params.r, genome.gene(0), genome.gene(1), (genome.gene(2) + genome.gene(3) * genome.gene(3))
-		/ (2 * genome.gene(1)), genome.gene(3), genome.gene(4));
+	assert(genome.gene(1) != 0);
+	return callPriceFFT(N, params.S, params.K, params.T, params.r,genome.gene(4),genome.gene(1),
+		(genome.gene(0)+genome.gene(2)*genome.gene(2))/(2*genome.gene(1)),genome.gene(2),genome.gene(3));
+		//genome.gene(0), genome.gene(1), (genome.gene(2) + genome.gene(3) * genome.gene(3))
+		/// (2 * genome.gene(1)), genome.gene(3), genome.gene(4));
 }
 
 float GASolver::objective(GAGenome& g)
@@ -60,6 +63,7 @@ float GASolver::objective(GAGenome& g)
 		err += mypow((double)(data[i].price - price),2);
 	}
 
+	mycount++;
 	return err;
 }
 
@@ -74,6 +78,7 @@ GABoolean GASolver::terminateProcess(GAGeneticAlgorithm & ga) {
 
 void GAGeneticAlgorithm::step() {
 	//  îòïğàâèòü â èíòğåôåéñ ïğîãğåññà, íàïğèìåğ: generation() / nGenerations();
+	//return;
 }
 
 
@@ -83,20 +88,21 @@ marketParams GASolver::getMarketParams()
 {
 	marketParams toreturn;
 	GARealAlleleSetArray alleles;
-	alleles.add(0, 1);
-	alleles.add(0, 50);
-	alleles.add(0, 50);
-	alleles.add(0, 1);
-	alleles.add(-1, 1);
+	alleles.add(0, 20); // 2*kappa*theta - sigma^2
+	alleles.add(0, 1); //theta
+	alleles.add(0, 1); //sigma
+	alleles.add(-1,1); // rho
+	alleles.add(0, 1); // v0
 
 	GARealGenome genome(alleles, objective);
 
 	GAParameterList params;
 	GASteadyStateGA::registerDefaultParameters(params);
+	
 	params.set(gaNnGenerations, alparam.genCount);
 	params.set(gaNpopulationSize, alparam.popSize);
-	params.set(gaNscoreFrequency, 10);
-	params.set(gaNflushFrequency, 50);
+	//params.set(gaNscoreFrequency, 10);
+	//params.set(gaNflushFrequency, 50);
 	params.set(gaNpCrossover, alparam.crosProb);
 	params.set(gaNpMutation, alparam.mutProb);
 	params.set(gaNminimaxi, -1);
@@ -105,23 +111,18 @@ marketParams GASolver::getMarketParams()
 
 	GASteadyStateGA ga(genome);
 	ga.parameters(params);
-	//ga.terminator() İÒÎ ÃÎÂÍÎ ÍÅ ÂÑÒÀÂËßÅÒÑß
+	//ga.terminator((GAGeneticAlgorithm::Terminator)terminateProcess)// İÒÎ ÃÎÂÍÎ ÍÅ ÂÑÒÀÂËßÅÒÑß
 	//ga.set(gaNscoreFilename, "bog.log");
 	ga.evolve();
 
 	GARealGenome& genomeAux = (GARealGenome&)ga.statistics().bestIndividual();
 
-	cout << genomeAux.gene(0) << endl;
-	cout << genomeAux.gene(1) << endl;
-	cout << (genomeAux.gene(2) + genomeAux.gene(3) * genomeAux.gene(3)) / (2 * genomeAux.gene(1)) << endl;
-	cout << genomeAux.gene(3) << endl;
-	cout << genomeAux.gene(4) << endl;
-
-	toreturn.v0 = genomeAux.gene(0);
+	assert(genomeAux.gene(1) != 0);	
+	toreturn.kappa = (genomeAux.gene(0) + genomeAux.gene(2)*genomeAux.gene(2)) / (2 * genomeAux.gene(1));
+	toreturn.v0 = genomeAux.gene(4);
 	toreturn.theta = genomeAux.gene(1);
-	toreturn.kappa = genomeAux.gene(2);
-	toreturn.sigma = genomeAux.gene(3);
-	toreturn.rho = genomeAux.gene(4);
+	toreturn.sigma = genomeAux.gene(2);
+	toreturn.rho = genomeAux.gene(3);
 
 	return toreturn;
 }
