@@ -18,12 +18,14 @@ data = new vector<optionParams>(_data);
 
 optionParams * GASolver:: data;
 size_t GASolver::size;
+unsigned int GASolver::N;
 
 using namespace std;
 
 
-GASolver::GASolver(optionParams * _data, int _size) {
+GASolver::GASolver(AlgoParams p, unsigned int _N, optionParams * _data, int _size) {
 	size = _size;
+	N = _N;
 	data = new optionParams[size];
 	marketSpread = 0;
 	for (int i = 0; i < size; ++i)
@@ -31,15 +33,18 @@ GASolver::GASolver(optionParams * _data, int _size) {
 		data[i] = _data[i];
 		marketSpread += mypow((double)(data[i].ask - data[i].bid), 2);
 	}
+	alparam = p;
+	//N = _N;
 }
 
 GASolver::~GASolver(){
 	delete data;
 }
 
-double GASolver::currentPrice(GAGenome& g , optionParams params) {
+double GASolver::currentPrice(GAGenome& g , optionParams params)
+{
 	GARealGenome& genome = (GARealGenome&)g;
-	return callPriceFFT(12, params.S, params.K, params.T, params.r, genome.gene(0), genome.gene(1), (genome.gene(2) + genome.gene(3) * genome.gene(3))
+	return callPriceFFT(N, params.S, params.K, params.T, params.r, genome.gene(0), genome.gene(1), (genome.gene(2) + genome.gene(3) * genome.gene(3))
 		/ (2 * genome.gene(1)), genome.gene(3), genome.gene(4));
 }
 
@@ -59,7 +64,14 @@ float GASolver::objective(GAGenome& g)
 }
 
 
-GABoolean GASolver::terminateProcess(GAGeneticAlgorithm & ga) {	if (ga.statistics().minEver() < marketSpread || ga.generation() >= ga.nGenerations())		return gaTrue;	else		return gaFalse;}
+GABoolean GASolver::terminateProcess(GAGeneticAlgorithm & ga) {
+	if (ga.statistics().minEver() < marketSpread || ga.generation() >= ga.nGenerations())
+		return gaTrue;
+	else
+		return gaFalse;
+
+}
+
 void GAGeneticAlgorithm::step() {
 	//  отправить в интрефейс прогресса, например: generation() / nGenerations();
 }
@@ -67,7 +79,7 @@ void GAGeneticAlgorithm::step() {
 
 
 
-marketParams GASolver::getMarketParams(double crossProb, int popSize)
+marketParams GASolver::getMarketParams()
 {
 	marketParams toreturn;
 	GARealAlleleSetArray alleles;
@@ -81,12 +93,12 @@ marketParams GASolver::getMarketParams(double crossProb, int popSize)
 
 	GAParameterList params;
 	GASteadyStateGA::registerDefaultParameters(params);
-	params.set(gaNnGenerations, 100);
-	params.set(gaNpopulationSize, popSize);
+	params.set(gaNnGenerations, alparam.genCount);
+	params.set(gaNpopulationSize, alparam.popSize);
 	params.set(gaNscoreFrequency, 10);
 	params.set(gaNflushFrequency, 50);
-	params.set(gaNpCrossover, crossProb);
-	params.set(gaNpMutation, 0.1);
+	params.set(gaNpCrossover, alparam.crosProb);
+	params.set(gaNpMutation, alparam.mutProb);
 	params.set(gaNminimaxi, -1);
 	params.set(gaNselectScores, (int)GAStatistics::AllScores);
 

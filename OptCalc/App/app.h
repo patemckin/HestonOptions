@@ -26,6 +26,10 @@ private:
 	Table dataForParams;
 	PriceFunParams data;
 	marketParams mp;
+	AlgoParams ap;
+	unsigned int N;
+	void doSmthWithAlgoParamsBlock(bool b);
+	void doSmthWithMarketParamsBlock(bool b);
 
 private slots:
 	void on_getFileButton_clicked();

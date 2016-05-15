@@ -15,12 +15,12 @@ FileWorker::~FileWorker()
 bool FileWorker::checkFile()
 {
 	QString *s = new QString[6];
-	s[0] = "Expiration";
-	s[1] = "Spot";
+	s[0] = "T";
+	s[1] = "S";
 	s[2] = "Bid";
 	s[3] = "Ask";
-	s[4] = "Strike";
-	s[5] = "Risk-free rate";
+	s[4] = "K";
+	s[5] = "r";
 	QString msg = "";
 
 	for (int i = 0; i < arr.size(); i++)
@@ -38,28 +38,18 @@ bool FileWorker::checkFile()
 
 		if (!(b[0] && b[1] && b[2] && b[3] && b[4] && b[5]))
 		{
-			msg += "Line " + QString::number(i + 1) + ":\n";
+			msg += QString::fromLocal8Bit("Строка ") + QString::number(i + 1) + ":\n";
 			QString temp = "";
-			int counter = 0;
 			for (int j = 0; j < 6; j++)
 			{
 				if (!b[j])
 				{
 					temp += s[j] + ", ";
-					counter++;
 				}
 			}
 			temp.remove(temp.length() - 2, 2);
 			msg += temp;
-			if (counter == 1)
-			{
-				msg += " is ";
-			}
-			else
-			{
-				msg += " are ";
-			}
-			msg += "out of bounds\n";
+			msg += QString::fromLocal8Bit(" вне границ\n");
 		}
 
 		delete(b);
@@ -68,7 +58,7 @@ bool FileWorker::checkFile()
 	if (!msg.isEmpty())
 	{
 		QMessageBox::StandardButton Load;
-		Load = QMessageBox::critical(this, "Error", msg, QMessageBox::Ok);
+		Load = QMessageBox::critical(this, QString::fromLocal8Bit("Ошибка"), msg, QMessageBox::Ok);
 		return false;
 	}
 
@@ -86,14 +76,14 @@ bool FileWorker::loadFile(const QString filePath)
 	if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
 	{
 		QMessageBox::StandardButton Load;
-		Load = QMessageBox::critical(this, "Error", "Error of table's opening", QMessageBox::Ok);
+		Load = QMessageBox::critical(this, QString::fromLocal8Bit("Ошибка"), QString::fromLocal8Bit("Ошибка открытия файла"), QMessageBox::Ok);
 		return false;
 	}
 	QFileInfo fi(filePath);
 	if (fi.size() > MAX_FILE_SIZE)
 	{
 		QMessageBox::StandardButton Load;
-		Load = QMessageBox::critical(this, "Error", "File's size is more than 100 KB", QMessageBox::Ok);
+		Load = QMessageBox::critical(this, QString::fromLocal8Bit("Ошибка"), QString::fromLocal8Bit("Размер файла больше 100 Кбайт"), QMessageBox::Ok);
 		return false;
 	}
 
@@ -109,7 +99,7 @@ bool FileWorker::loadFile(const QString filePath)
 		if (row.length() != 6)
 		{
 			QMessageBox::StandardButton Load;
-			Load = QMessageBox::critical(this, "Error", "The table must be 6 columns", QMessageBox::Ok);
+			Load = QMessageBox::critical(this, QString::fromLocal8Bit("Ошибка"), QString::fromLocal8Bit("В таблице должно быть 6 столбцов"), QMessageBox::Ok);
 			return false;
 		}
 
@@ -120,7 +110,7 @@ bool FileWorker::loadFile(const QString filePath)
 			if (!result)
 			{
 				QMessageBox::StandardButton Load;
-				Load = QMessageBox::critical(this, "Error", "The table must be a number", QMessageBox::Ok);
+				Load = QMessageBox::critical(this, QString::fromLocal8Bit("Ошибка"), QString::fromLocal8Bit("В таблице должны быть числа"), QMessageBox::Ok);
 				return false;
 			}
 			temp.append(num);
@@ -142,7 +132,7 @@ Table FileWorker::getTable()
 		res[i].K = arr[i][4];
 		res[i].T = arr[i][0];
 		res[i].r = arr[i][5];
-		res[i].price = (arr[i][3] - arr[i][2]) / 2;
+		res[i].price = (arr[i][3] + arr[i][2]) / 2;
 		res[i].bid = arr[i][2];
 		res[i].ask = arr[i][3];
 

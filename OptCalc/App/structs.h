@@ -2,7 +2,6 @@
 
 typedef struct _dataForFFT
 {
-	unsigned int	N;
 	double			S;
 	double			K;
 	double			r;
@@ -33,3 +32,11 @@ typedef struct _marketParams
 	float sigma;
 	float rho;
 } marketParams;
+
+typedef struct _dataForAlgo
+{
+	unsigned int	popSize;
+	unsigned int	genCount;
+	unsigned int	crosProb;
+	unsigned int	mutProb;
+} AlgoParams;
