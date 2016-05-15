@@ -8,6 +8,11 @@
 
 using namespace std;
 
+int mcount = 0;
+
+  optionParams *GASolver:: data;
+ int GASolver::size;
+
 //vector<optionParams> data;
 /*
 marketParams getMarketParams(vector<optionParams> marketData, double crossProb, int popSize)
@@ -83,7 +88,7 @@ GASolver::GASolver(optionParams * _data, int _size) {
 	size = _size;
 	data = new optionParams[size];
 	for (int i = 0; i < size; ++i)
-		data[i] = data[i];
+		data[i] = _data[i];
 }
 
 GASolver::GASolver(){}
@@ -105,12 +110,24 @@ float GASolver::objective(GAGenome& g)
 	float err = 0;
 	for (size_t i = 0; i < size; ++i)
 	{
-		price = (float)callPriceFFT(12, data[i].S, data[i].K, data[i].T, data[i].r, genome.gene(0), genome.gene(1), (genome.gene(2) + genome.gene(3) * genome.gene(3))
-			/ (2 * genome.gene(1)), genome.gene(3), genome.gene(4));
+	/*	cout << "-----" << endl;
+		cout << genome.gene(4) << endl;
+		cout << genome.gene(1) << endl;
+		cout << (genome.gene(0) + genome.gene(2)*genome.gene(2)) / (2 * genome.gene(1)) << endl;
+		cout << genome.gene(2) << endl;
+		cout << genome.gene(3) << endl;
+		cout << "-----" << endl;*/
+		price = (float)callPriceFFT(12, data[i].S, data[i].K, data[i].T, data[i].r, genome.gene(4), genome.gene(1),
+			(genome.gene(0) + genome.gene(2)*genome.gene(2)) / (2 * genome.gene(1)), genome.gene(2), genome.gene(3));
+		
+		//cout << price;
 		err += (data[i].price - price)*(data[i].price - price);
 	}
-
+	//cout << err << endl;
+	mcount++;
+	
 	return err;
+
 }
 
 marketParams GASolver::getMarketParams(double crossProb, int popSize)
@@ -122,17 +139,17 @@ marketParams GASolver::getMarketParams(double crossProb, int popSize)
 	//data = marketData;
 	marketParams toreturn;
 	GARealAlleleSetArray alleles;
-	alleles.add(0, 1);
-	alleles.add(0, 50);
-	alleles.add(0, 50);
-	alleles.add(0, 1);
-	alleles.add(-1, 1);
+	alleles.add(0, 20); // 2*kappa*theta - sigma^2
+	alleles.add(0.0001, 1); //theta
+	alleles.add(0, 1); //sigma
+	alleles.add(-1, 1); // rho
+	alleles.add(0, 1); // v0
 
 	GARealGenome genome(alleles, objective);
 
 	GAParameterList params;
 	GASteadyStateGA::registerDefaultParameters(params);
-	params.set(gaNnGenerations, 10);
+	params.set(gaNnGenerations, 20);
 	params.set(gaNpopulationSize, popSize);
 	params.set(gaNscoreFrequency, 10);
 	params.set(gaNflushFrequency, 50);
@@ -148,17 +165,17 @@ marketParams GASolver::getMarketParams(double crossProb, int popSize)
 
 	GARealGenome& genomeAux = (GARealGenome&)ga.statistics().bestIndividual();
 
-	cout << genomeAux.gene(0) << endl;
-	cout << genomeAux.gene(1) << endl;
-	cout << (genomeAux.gene(2) + genomeAux.gene(3) * genomeAux.gene(3)) / (2 * genomeAux.gene(1)) << endl;
-	cout << genomeAux.gene(3) << endl;
-	cout << genomeAux.gene(4) << endl;
-
-	toreturn.v0 = genomeAux.gene(0);
+	toreturn.kappa = (genomeAux.gene(0) + genomeAux.gene(2)*genomeAux.gene(2)) / (2 * genomeAux.gene(1));
+	toreturn.v0 = genomeAux.gene(4);
 	toreturn.theta = genomeAux.gene(1);
-	toreturn.kappa = genomeAux.gene(2);
-	toreturn.sigma = genomeAux.gene(3);
-	toreturn.rho = genomeAux.gene(4);
+	toreturn.sigma = genomeAux.gene(2);
+	toreturn.rho = genomeAux.gene(3);
+
+	cout << toreturn.v0 << endl;
+	cout << toreturn.theta << endl;
+	cout << toreturn.sigma<< endl;
+	cout << toreturn.rho << endl;
+	cout << toreturn.kappa << endl;
 
 	return toreturn;
 }
@@ -171,7 +188,9 @@ int main()
 
 
 	GASolver solver(marketdata,1);
-	solver.getMarketParams(0.9, 100);
+	solver.getMarketParams(0.9, 10);
+
+	cout << mcount << endl;
 
 	_getch();
 	return 0;
