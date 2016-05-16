@@ -42,14 +42,18 @@ class MyClass : public QObject, public  GASteadyStateGA
 public:
 	MyClass(GARealGenome &g, void *_ptr, QObject * parent = 0) : GASteadyStateGA(g), QObject(parent)
 	{
-		//connect(this, SIGNAL(sig(double)), (QObject*)_ptr, SLOT(_ptr->ui.progressBar->setValue(int)));
-		p = new QProgressDialog();
+		p = new QProgressDialog("Calculating parameters...", "", 0, 100, (QWidget*)nullptr);
 		QProgressBar * bar = new QProgressBar();
-		p->setBar(bar);
-		p->setMaximum(100);
-		p->setMinimum(0);
-		p->setWindowModality(Qt::WindowModal);
+		bar->setTextVisible(true);
+
+
+		p->setWindowFlags(Qt::Window | Qt::WindowTitleHint | Qt::CustomizeWindowHint);
+		p->setModal(true);
+		//p->setWindowModality(Qt::WindowModal);
+	    p->setCancelButton(0);
 		p->setValue(0);
+		p->setMinimumDuration(0);
+		p->setAutoReset(true);
 		p->show();
 	}
 	virtual ~MyClass() {
@@ -58,7 +62,4 @@ public:
 	virtual void step();
 private:
 	QProgressDialog *p;
-
-signals:
-	void sig(int val);
 };

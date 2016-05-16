@@ -155,8 +155,8 @@ void MyClass::step() {
 
 	stats.update(*pop);		// update the statistics by one generation
 //	emit sig((int) (generation() / nGenerations() * 100));
-    p->setValue((int)(generation() / nGenerations() * 100));
-	qDebug() << (generation() / nGenerations() * 100) << endl;
+    p->setValue((int)floor((double)generation() / nGenerations() * 100));
+	//qDebug() << (generation() / nGenerations() * 100) << endl;
 }
 
 marketParams GASolver::getMarketParams()
@@ -187,7 +187,7 @@ marketParams GASolver::getMarketParams()
 	//GASteadyStateGA ga(genome);
 	MyClass ga(genome, ptr);
 	ga.parameters(params);
-	//ga.terminator(terminateProcess);
+	ga.terminator(terminateProcess);
 	//ga.terminator((GAGeneticAlgorithm::Terminator)terminateProcess)// ÝÒÎ ÃÎÂÍÎ ÍÅ ÂÑÒÀÂËßÅÒÑß
 	//ga.set(gaNscoreFilename, "bog.log");
 	ga.evolve();
