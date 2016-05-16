@@ -37,6 +37,6 @@ typedef struct _dataForAlgo
 {
 	unsigned int	popSize;
 	unsigned int	genCount;
-	unsigned int	crosProb;
-	unsigned int	mutProb;
+	double	crosProb;
+	double	mutProb;
 } AlgoParams;

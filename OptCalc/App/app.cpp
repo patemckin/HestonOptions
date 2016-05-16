@@ -93,7 +93,7 @@ void App::on_getParametersButton_clicked()
 		}
 		else
 		{
-			GASolver solver(ap, N, dataForParams.toStdVector().data(), dataForParams.toStdVector().size());
+			GASolver solver(ap, N, dataForParams.toStdVector().data(), dataForParams.toStdVector().size(), this);
 			marketParams mp = solver.getMarketParams();
 
 			ui.kappa_Line->setText(QString::number(mp.kappa));
@@ -255,8 +255,8 @@ void App::doSmthWithAlgoParamsBlock(bool b)
 
 	if (b)
 	{
-		ui.popSize_Line->setText("100");
-		ui.genCount_Line->setText("100");
+		ui.popSize_Line->setText("5");
+		ui.genCount_Line->setText("3");
 		ui.crosProb_Line->setText("0.9");
 		ui.mutProb_Line->setText("0.2");
 	}

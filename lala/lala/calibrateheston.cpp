@@ -149,7 +149,7 @@ marketParams GASolver::getMarketParams(double crossProb, int popSize)
 
 	GAParameterList params;
 	GASteadyStateGA::registerDefaultParameters(params);
-	params.set(gaNnGenerations, 20);
+	params.set(gaNnGenerations, 15);
 	params.set(gaNpopulationSize, popSize);
 	params.set(gaNscoreFrequency, 10);
 	params.set(gaNflushFrequency, 50);
