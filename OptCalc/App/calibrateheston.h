@@ -12,23 +12,19 @@ class GASolver: GAGenome
 {
 public:	
 	GASolver(AlgoParams p, unsigned int _N, optionParams * _data, int _size);
-	//GASolver::GASolver(vector <optionParams> _data);
 	~GASolver();
 	marketParams getMarketParams();
-	//static  vector<optionParams> * data;
+
 private:
 	AlgoParams alparam;
-	static float objective(GAGenome& g);
-	GABoolean done();
-	static double currentPrice(GAGenome& g, optionParams params);
-	GABoolean GASolver::terminateProcess(GAGeneticAlgorithm & ga);
+	static unsigned int N;
 	static optionParams * data;
 	static size_t size;
-	static unsigned int N;
+
+	static double currentPrice(GAGenome& g, optionParams params);
+	static float objective(GAGenome& g);
+	GABoolean done();
+	GABoolean GASolver::terminateProcess(GAGeneticAlgorithm & ga);
 
 	double marketSpread;
-
 };
-
-//marketParams getMarketParams(vector<optionParams> marketData, double crossProb, int popsize);
-//float objective(GAGenome& g);

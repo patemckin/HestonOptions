@@ -79,6 +79,9 @@
     <CustomBuild Include="file_worker.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
+    <CustomBuild Include="calibrateheston.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_app.h">
@@ -91,9 +94,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="structs.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="calibrateheston.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

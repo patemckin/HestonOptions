@@ -128,7 +128,20 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="4FFT\include\fftw3.h" />
-    <ClInclude Include="calibrateheston.h" />
+    <CustomBuild Include="calibrateheston.h">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </Command>
+    </CustomBuild>
     <ClInclude Include="GeneratedFiles\ui_app.h" />
     <ClInclude Include="PriceCalculation.h" />
     <ClInclude Include="structs.h" />

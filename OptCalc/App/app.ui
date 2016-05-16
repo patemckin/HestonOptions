@@ -523,7 +523,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>100</string>
+     <string/>
     </property>
     <property name="readOnly">
      <bool>false</bool>
@@ -564,7 +564,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>100</string>
+     <string/>
     </property>
     <property name="readOnly">
      <bool>false</bool>
@@ -594,7 +594,7 @@
    </widget>
    <widget class="QLineEdit" name="crosProb_Line">
     <property name="enabled">
-     <bool>true</bool>
+     <bool>false</bool>
     </property>
     <property name="geometry">
      <rect>
@@ -605,7 +605,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>0.9</string>
+     <string/>
     </property>
     <property name="readOnly">
      <bool>false</bool>
@@ -646,7 +646,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>0.2</string>
+     <string/>
     </property>
     <property name="readOnly">
      <bool>false</bool>

@@ -243,12 +243,12 @@ void App::doSmthWithAlgoParamsBlock(bool b)
 	ui.crosProb_Line->setEnabled(b);
 	ui.mutProb_Line->setEnabled(b);
 
-	/*if (b)
+	if (b)
 	{
-		ui.popSize_Line->setText("");
-		ui.genCount_Line->setText("");
-		ui.crosProb_Line->setText("");
-		ui.mutProb_Line->setText("");
+		ui.popSize_Line->setText("100");
+		ui.genCount_Line->setText("100");
+		ui.crosProb_Line->setText("0.9");
+		ui.mutProb_Line->setText("0.2");
 	}
 	else
 	{
@@ -256,7 +256,7 @@ void App::doSmthWithAlgoParamsBlock(bool b)
 		ui.genCount_Line->clear();
 		ui.crosProb_Line->clear();
 		ui.mutProb_Line->clear();
-	}*/
+	}
 }
 
 void App::doSmthWithMarketParamsBlock(bool b)

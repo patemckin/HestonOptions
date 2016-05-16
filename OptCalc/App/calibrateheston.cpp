@@ -23,9 +23,11 @@ unsigned int GASolver::N;
 using namespace std;
 
 
-GASolver::GASolver(AlgoParams p, unsigned int _N, optionParams * _data, int _size) {
-	size = _size;
+GASolver::GASolver(AlgoParams p, unsigned int _N, optionParams * _data, int _size)
+{
+	alparam = p;
 	N = _N;
+	size = _size;
 	data = new optionParams[size];
 	marketSpread = 0;
 	for (int i = 0; i < size; ++i)
@@ -33,11 +35,10 @@ GASolver::GASolver(AlgoParams p, unsigned int _N, optionParams * _data, int _siz
 		data[i] = _data[i];
 		marketSpread += mypow((double)(data[i].ask - data[i].bid), 2);
 	}
-	alparam = p;
-	//N = _N;
 }
 
-GASolver::~GASolver(){
+GASolver::~GASolver()
+{
 	delete data;
 }
 
@@ -45,8 +46,8 @@ double GASolver::currentPrice(GAGenome& g , optionParams params)
 {
 	GARealGenome& genome = (GARealGenome&)g;
 	assert(genome.gene(1) != 0);
-	return callPriceFFT(N, params.S, params.K, params.T, params.r,genome.gene(4),genome.gene(1),
-		(genome.gene(0)+genome.gene(2)*genome.gene(2))/(2*genome.gene(1)),genome.gene(2),genome.gene(3));
+	return callPriceFFT(N, params.S, params.K, params.T, params.r, genome.gene(4), genome.gene(1),
+		(genome.gene(0) + genome.gene(2) * genome.gene(2)) / (2 * genome.gene(1)), genome.gene(2), genome.gene(3));
 		//genome.gene(0), genome.gene(1), (genome.gene(2) + genome.gene(3) * genome.gene(3))
 		/// (2 * genome.gene(1)), genome.gene(3), genome.gene(4));
 }
@@ -67,22 +68,17 @@ float GASolver::objective(GAGenome& g)
 	return err;
 }
 
-
-GABoolean GASolver::terminateProcess(GAGeneticAlgorithm & ga) {
+GABoolean GASolver::terminateProcess(GAGeneticAlgorithm & ga)
+{
 	if (ga.statistics().minEver() < marketSpread || ga.generation() >= ga.nGenerations())
 		return gaTrue;
 	else
 		return gaFalse;
-
 }
 
 void GAGeneticAlgorithm::step() {
 	//  отправить в интрефейс прогресса, например: generation() / nGenerations();
-	//return;
 }
-
-
-
 
 marketParams GASolver::getMarketParams()
 {
