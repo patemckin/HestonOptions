@@ -30,7 +30,7 @@ bool FileWorker::checkFile()
 		b[1] = arr[i][1] > 0. & arr[i][1] <= 100000.;
 		b[4] = arr[i][4] > 0. & arr[i][4] <= 100000.;
 		double diff = abs(arr[i][1] - arr[i][4]);
-		b[2] = arr[i][2] >= diff & arr[i][2] <= 100. * diff;
+		b[2] = arr[i][2] >= diff & arr[i][2] <= 100. * diff; 
 		b[3] = arr[i][3] >= diff & arr[i][3] <= 100. * diff;
 		b[5] = arr[i][5] >= 0. & arr[i][5] <= 1.;
 
