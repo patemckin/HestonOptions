@@ -4,6 +4,8 @@
 #include <QtWidgets/QMainWindow>
 #include <QString>
 #include <QFileDialog>
+#include <QScrollArea>
+#include <QVBoxLayout>
 #include "ui_app.h"
 #include "file_worker.h"
 #include "PriceCalculation.h"
@@ -28,8 +30,11 @@ private:
 	marketParams mp;
 	AlgoParams ap;
 	unsigned int N;
+	QString help;
+
 	void doSmthWithAlgoParamsBlock(bool b);
 	void doSmthWithMarketParamsBlock(bool b);
+	void makeDialogWithString(const QString s);
 
 private slots:
 	void on_getFileButton_clicked();
@@ -37,6 +42,7 @@ private slots:
 	void on_getCostButton_clicked();
 	void parAutoWrite_checked();
 	void parHandWrite_checked();
+	void menuHelp_clicked();
 };
 
 #endif // APP_H

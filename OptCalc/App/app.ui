@@ -732,20 +732,22 @@
      <height>21</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuHelp">
+   <widget class="QMenu" name="menu">
     <property name="title">
-     <string>Помощь</string>
+     <string>Меню</string>
     </property>
+    <widget class="QMenu" name="menuPars">
+     <property name="title">
+      <string>Режим</string>
+     </property>
+     <addaction name="parHandWrite"/>
+     <addaction name="parAutoWrite"/>
+    </widget>
+    <addaction name="menuPars"/>
+    <addaction name="separator"/>
+    <addaction name="menuHelp"/>
    </widget>
-   <widget class="QMenu" name="menuPars">
-    <property name="title">
-     <string>Режим</string>
-    </property>
-    <addaction name="parHandWrite"/>
-    <addaction name="parAutoWrite"/>
-   </widget>
-   <addaction name="menuHelp"/>
-   <addaction name="menuPars"/>
+   <addaction name="menu"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -756,12 +758,23 @@
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
-  <action name="parAutoWrite">
+  <action name="parAutoWrite2">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="text">
     <string>Режим расчета</string>
+   </property>
+  </action>
+  <action name="parHandWrite2">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Режим ввода</string>
    </property>
   </action>
   <action name="parHandWrite">
@@ -773,6 +786,19 @@
    </property>
    <property name="text">
     <string>Режим ввода</string>
+   </property>
+  </action>
+  <action name="parAutoWrite">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Режим расчета</string>
+   </property>
+  </action>
+  <action name="menuHelp">
+   <property name="text">
+    <string>Помощь</string>
    </property>
   </action>
  </widget>

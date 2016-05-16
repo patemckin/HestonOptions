@@ -57,8 +57,10 @@ bool FileWorker::checkFile()
 
 	if (!msg.isEmpty())
 	{
-		QMessageBox::StandardButton Load;
-		Load = QMessageBox::critical(this, QString::fromLocal8Bit("Ошибка"), msg, QMessageBox::Ok);
+		QMessageBox *mb = new QMessageBox(this);
+		mb->setText(QString::fromLocal8Bit("История не валидна"));
+		mb->setDetailedText(msg);
+		mb->exec();
 		return false;
 	}
 

@@ -6,6 +6,16 @@ App::App(QWidget *parent)
 	ui.setupUi(this);
 	connect(ui.parAutoWrite, SIGNAL(triggered(bool)), this, SLOT(parAutoWrite_checked()));
 	connect(ui.parHandWrite, SIGNAL(triggered(bool)), this, SLOT(parHandWrite_checked()));
+	connect(ui.menuHelp, SIGNAL(triggered(bool)), this, SLOT(menuHelp_clicked()));
+
+	QFile file("README.txt");
+	if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+	{
+		QMessageBox::StandardButton Load;
+		Load = QMessageBox::critical(this, QString::fromLocal8Bit("Ошибка"), QString::fromLocal8Bit("Ошибка открытия файла"), QMessageBox::Ok);
+	}
+	help = QString::fromLocal8Bit(file.readAll());
+	file.close();
 }
 
 App::~App()
@@ -272,4 +282,26 @@ void App::doSmthWithMarketParamsBlock(bool b)
 	ui.kappa_Line->setReadOnly(b);
 	ui.sigma_Line->setReadOnly(b);
 	ui.rho_Line->setReadOnly(b);
+}
+
+void App::menuHelp_clicked()
+{
+	makeDialogWithString(help);
+}
+
+void App::makeDialogWithString(const QString s)
+{
+	QDialog *dialog = new QDialog(this);
+	QLabel *label = new QLabel(this);
+	QScrollArea *scroll = new QScrollArea(this);
+	QVBoxLayout *layout = new QVBoxLayout();
+
+	label->setText(s);
+	scroll->setWidget(label);
+	scroll->setWidgetResizable(true);
+	layout->addWidget(scroll);
+	dialog->setLayout(layout);
+
+	dialog->exec();
+	delete dialog;
 }
