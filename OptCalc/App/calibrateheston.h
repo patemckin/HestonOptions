@@ -1,5 +1,6 @@
 #pragma once
 #include <QObject>
+#include <qapplication.h>
 #include <QProgressDialog>
 #include <QDebug>
 #include <iostream>
@@ -11,6 +12,8 @@
 #include "PriceCalculation.h"
 #include <vector>
 #include "structs.h"
+
+#define CALC_ACCURACY  10e-7
 
 class GASolver: GAGenome 
 {
@@ -34,12 +37,12 @@ private:
 	static double marketSpread;
 };
 
-class PBClass: public QObject, public  GASteadyStateGA
+class PBClass: public QObject, public  GASimpleGA
 {
 	Q_OBJECT
 
 public:
-	PBClass(GARealGenome &g, void *_ptr, QObject * parent = 0): GASteadyStateGA(g), QObject(parent)
+	PBClass(GARealGenome &g, void *_ptr, QObject * parent = 0): GASimpleGA(g), QObject(parent)
 	{
 		p = new QProgressDialog(QString::fromLocal8Bit("Вычисление параметров..."), QString::fromLocal8Bit("Отмена"), 0, 100, (QWidget*)nullptr);
 		p->setWindowFlags(Qt::Window | Qt::WindowTitleHint | Qt::CustomizeWindowHint);
@@ -48,6 +51,7 @@ public:
 		p->setAutoReset(true);
 		p->setValue(0);
 		p->show();
+		qApp->processEvents();
 	}
 
 	virtual ~PBClass()

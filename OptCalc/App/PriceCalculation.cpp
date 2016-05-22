@@ -102,9 +102,12 @@ double callPriceFFT(int N, double S, double K, double T, double r, double v0, do
    /** Interpolation - end */
 
 
-    fftw_destroy_plan(plan_forward);
+	delete[] ku;
+	delete[] cpvec;
+	fftw_destroy_plan(plan_forward);
     fftw_free(fftFunc);
     fftw_free(out);
+
 
     return price;
 }
