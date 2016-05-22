@@ -12,11 +12,13 @@ optionParams*	GASolver::data;
 size_t			GASolver::size;
 unsigned int	GASolver::N;
 double			GASolver::marketSpread;
+bool			GASolver::stop;
 
 using namespace std;
 
 GASolver::GASolver(AlgoParams p, unsigned int _N, optionParams * _data, int _size, void *_ptr): ptr(_ptr)
 {
+	stop = false;
 	alparam = p;
 	N = _N;
 	size = _size;
@@ -59,14 +61,21 @@ float GASolver::objective(GAGenome& g)
 
 GABoolean GASolver::terminateProcess(GAGeneticAlgorithm & ga)
 {
-	if (ga.statistics().minEver() < marketSpread || ga.generation() >= ga.nGenerations())
+	if (!stop)
 	{
-		return gaTrue;
-	}	
+		if (ga.statistics().minEver() < marketSpread || ga.generation() >= ga.nGenerations())
+		{
+			return gaTrue;
+		}
+		else
+		{
+			return gaFalse;
+		}
+	}
 	else
 	{
-		return gaFalse;
-	}	
+		return gaTrue;
+	}
 }
 
 void GAGeneticAlgorithm::step()
@@ -149,6 +158,11 @@ void PBClass::step()
 	stats.update(*pop);		// update the statistics by one generation
 
     p->setValue((int)floor((double)generation() / nGenerations() * 100));
+	if (p->wasCanceled())
+	{
+		GASolver::stop = true;
+		delete p;
+	}
 }
 
 marketParams GASolver::getMarketParams()
@@ -176,6 +190,7 @@ marketParams GASolver::getMarketParams()
 	PBClass ga(genome, ptr);
 	ga.parameters(params);
 	ga.terminator(terminateProcess);
+	ga.setProgressValue(0);
 	ga.evolve();
 
 	GARealGenome& genomeAux = (GARealGenome&)ga.statistics().bestIndividual();

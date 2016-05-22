@@ -96,11 +96,14 @@ void App::on_getParametersButton_clicked()
 			GASolver solver(ap, N, dataForParams.toStdVector().data(), dataForParams.toStdVector().size(), this);
 			marketParams mp = solver.getMarketParams();
 
-			ui.kappa_Line->setText(QString::number(mp.kappa));
-			ui.theta_Line->setText(QString::number(mp.theta));
-			ui.v0_Line->setText(QString::number(mp.v0));
-			ui.sigma_Line->setText(QString::number(mp.sigma));
-			ui.rho_Line->setText(QString::number(mp.rho));
+			if (!GASolver::stop)
+			{
+				ui.kappa_Line->setText(QString::number(mp.kappa));
+				ui.theta_Line->setText(QString::number(mp.theta));
+				ui.v0_Line->setText(QString::number(mp.v0));
+				ui.sigma_Line->setText(QString::number(mp.sigma));
+				ui.rho_Line->setText(QString::number(mp.rho));
+			}
 		}
 	}
 }
