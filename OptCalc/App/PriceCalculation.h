@@ -16,4 +16,5 @@ typedef complex<double> cmplx;
 
 double callPriceFFT(int N, double S, double K, double T, double r, double v0, double theta, double kappa, double sigma, double rho);
 double mypow(double a, int n);
+
 #endif // PRICECALCULATION_H_INCLUDED

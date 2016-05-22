@@ -29,36 +29,37 @@ private:
 
 	static double currentPrice(GAGenome& g, optionParams params);
 	static float objective(GAGenome& g);
-	GABoolean done();
 	static GABoolean GASolver::terminateProcess(GAGeneticAlgorithm & ga);
 
 	static double marketSpread;
 };
 
-class MyClass : public QObject, public  GASteadyStateGA
+class PBClass : public QObject, public  GASteadyStateGA
 {
 	Q_OBJECT
 
 public:
-	MyClass(GARealGenome &g, void *_ptr, QObject * parent = 0) : GASteadyStateGA(g), QObject(parent)
+	PBClass(GARealGenome &g, void *_ptr, QObject * parent = 0) : GASteadyStateGA(g), QObject(parent)
 	{
 		p = new QProgressDialog("Calculating parameters...", "", 0, 100, (QWidget*)nullptr);
-		QProgressBar * bar = new QProgressBar();
+		QProgressBar* bar = new QProgressBar();
 		bar->setTextVisible(true);
 
 
 		p->setWindowFlags(Qt::Window | Qt::WindowTitleHint | Qt::CustomizeWindowHint);
 		p->setModal(true);
-		//p->setWindowModality(Qt::WindowModal);
 	    p->setCancelButton(0);
-		p->setValue(0);
 		p->setMinimumDuration(0);
 		p->setAutoReset(true);
 		p->show();
+		p->setValue(0);
 	}
-	virtual ~MyClass() {
+
+	virtual ~PBClass()
+	{
 		delete p;
-	};
+	}
+
 	virtual void step();
 private:
 	QProgressDialog *p;

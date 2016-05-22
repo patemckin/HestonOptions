@@ -5,25 +5,15 @@
 #include <ga/GAGenome.h>
 #include "calibrateheston.h"
 
-static int mycount = 0;
-
 #pragma comment(lib, "fftw3.lib")
-
 #define MAX0(a) (a > 0.0 ? a : 0.0)
 
-//vector<marketParams> * GASolver:: data;
-/*GASolver::GASolver(vector <optionParams> _data) {
-data = new vector<optionParams>(_data);
-}*/
-
-optionParams * GASolver:: data;
-size_t GASolver::size;
-unsigned int GASolver::N;
-double GASolver::marketSpread;
-
+optionParams*	GASolver::data;
+size_t			GASolver::size;
+unsigned int	GASolver::N;
+double			GASolver::marketSpread;
 
 using namespace std;
-
 
 GASolver::GASolver(AlgoParams p, unsigned int _N, optionParams * _data, int _size, void *_ptr): ptr(_ptr)
 {
@@ -50,8 +40,6 @@ double GASolver::currentPrice(GAGenome& g , optionParams params)
 	assert(genome.gene(1) != 0);
 	return callPriceFFT(N, params.S, params.K, params.T, params.r, genome.gene(4), genome.gene(1),
 		(genome.gene(0) + genome.gene(2) * genome.gene(2)) / (2 * genome.gene(1)), genome.gene(2), genome.gene(3));
-		//genome.gene(0), genome.gene(1), (genome.gene(2) + genome.gene(3) * genome.gene(3))
-		/// (2 * genome.gene(1)), genome.gene(3), genome.gene(4));
 }
 
 float GASolver::objective(GAGenome& g)
@@ -63,26 +51,31 @@ float GASolver::objective(GAGenome& g)
 	for (size_t i = 0; i < size; ++i)
 	{
 		price = (float)currentPrice(g, data[i]);
-		err += mypow((double)(data[i].price - price),2);
+		err += mypow((double)(data[i].price - price), 2);
 	}
 
-	mycount++;
 	return err;
 }
 
 GABoolean GASolver::terminateProcess(GAGeneticAlgorithm & ga)
 {
 	if (ga.statistics().minEver() < marketSpread || ga.generation() >= ga.nGenerations())
+	{
 		return gaTrue;
+	}	
 	else
+	{
 		return gaFalse;
+	}	
 }
 
-void GAGeneticAlgorithm::step() {
-	//  îòïðàâèòü â èíòðåôåéñ ïðîãðåññà, íàïðèìåð: generation() / nGenerations();
+void GAGeneticAlgorithm::step()
+{
+
 }
 
-void MyClass::step() {
+void PBClass::step()
+{
 	int i, mut, c1, c2;
 	GAGenome *mom, *dad;          // tmp holders for selected genomes
 
@@ -154,20 +147,19 @@ void MyClass::step() {
 	stats.numrep += tmpPop->size();
 
 	stats.update(*pop);		// update the statistics by one generation
-//	emit sig((int) (generation() / nGenerations() * 100));
+
     p->setValue((int)floor((double)generation() / nGenerations() * 100));
-	//qDebug() << (generation() / nGenerations() * 100) << endl;
 }
 
 marketParams GASolver::getMarketParams()
 {
 	marketParams toreturn;
 	GARealAlleleSetArray alleles;
-	alleles.add(0, 20); // 2*kappa*theta - sigma^2
-	alleles.add(0.00001, 1); //theta
-	alleles.add(0, 1); //sigma
-	alleles.add(-1,1); // rho
-	alleles.add(0, 1); // v0
+	alleles.add(0, 20);				// 2 * kappa * theta - sigma ^ 2
+	alleles.add(0.00001, 1);		// theta
+	alleles.add(0, 1);				// sigma
+	alleles.add(-1,1);				// rho
+	alleles.add(0, 1);				// v0
 
 	GARealGenome genome(alleles, objective);
 
@@ -176,20 +168,14 @@ marketParams GASolver::getMarketParams()
 	
 	params.set(gaNnGenerations, alparam.genCount);
 	params.set(gaNpopulationSize, alparam.popSize);
-	//params.set(gaNscoreFrequency, 10);
-	//params.set(gaNflushFrequency, 50);
 	params.set(gaNpCrossover, alparam.crosProb);
 	params.set(gaNpMutation, alparam.mutProb);
 	params.set(gaNminimaxi, -1);
 	params.set(gaNselectScores, (int)GAStatistics::AllScores);
 
-
-	//GASteadyStateGA ga(genome);
-	MyClass ga(genome, ptr);
+	PBClass ga(genome, ptr);
 	ga.parameters(params);
 	ga.terminator(terminateProcess);
-	//ga.terminator((GAGeneticAlgorithm::Terminator)terminateProcess)// ÝÒÎ ÃÎÂÍÎ ÍÅ ÂÑÒÀÂËßÅÒÑß
-	//ga.set(gaNscoreFilename, "bog.log");
 	ga.evolve();
 
 	GARealGenome& genomeAux = (GARealGenome&)ga.statistics().bestIndividual();
@@ -203,18 +189,3 @@ marketParams GASolver::getMarketParams()
 
 	return toreturn;
 }
-
-/*
-int main()
-{
-	optionParams marketdata[1];
-	marketdata[0].r = 2.2685; marketdata[0].T = 0.126027;  marketdata[0].S = 1544.50;  marketdata[0].K = 1000.00; marketdata[0].price = 559.00; marketdata[0].bid = 553.00; marketdata[0].ask = 565.00;
-
-
-	GASolver solver(marketdata,1);
-	solver.getMarketParams(0.9, 100);
-
-	_getch();
-	return 0;
-}
-*/

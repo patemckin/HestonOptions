@@ -34,8 +34,6 @@ bool FileWorker::checkFile()
 		b[3] = arr[i][3] >= diff & arr[i][3] <= 100. * diff;
 		b[5] = arr[i][5] >= 0. & arr[i][5] <= 1.;
 
-		//qDebug() << b[0] << b[1] << b[2] << b[3] << b[4] << b[5] << endl;
-
 		if (!(b[0] && b[1] && b[2] && b[3] && b[4] && b[5]))
 		{
 			msg += QString::fromLocal8Bit("Строка ") + QString::number(i + 1) + ":\n";

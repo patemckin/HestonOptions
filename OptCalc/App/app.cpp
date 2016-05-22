@@ -189,54 +189,68 @@ void App::on_getCostButton_clicked()
 }
 
 void App::parAutoWrite_checked()
-{	
-	// Снимаем галку с режима "Ручной ввод"
-	ui.parHandWrite->setChecked(false);
-	
-	// Разблокируем строку пути к файлу, кнопку "Выберите файл" и 
-	// заблокируем кнопки "Расчет параметров" и "Расчет цены" для их последовательного вызова
-	ui.filePathLine->setEnabled(true);
-	ui.getFileButton->setEnabled(true);
-	ui.getParametersButton->setEnabled(false);
-	ui.getCostButton->setEnabled(false);
+{
+	if (ui.parHandWrite->isChecked())
+	{
+		// Снимаем галку с режима "Ручной ввод"
+		ui.parHandWrite->setChecked(false);
 
-	// Очистим и заблокируем ячейки в блоке "Параметры рынка" до расчета параметров
-	doSmthWithMarketParamsBlock(true);
+		// Разблокируем строку пути к файлу, кнопку "Выберите файл" и 
+		// заблокируем кнопки "Расчет параметров" и "Расчет цены" для их последовательного вызова
+		ui.filePathLine->setEnabled(true);
+		ui.getFileButton->setEnabled(true);
+		ui.getParametersButton->setEnabled(false);
+		ui.getCostButton->setEnabled(false);
 
-	// Разблокируем блок "Параметры алгоритма" и установим дефолтные параметры
-	doSmthWithAlgoParamsBlock(true);
+		// Очистим и заблокируем ячейки в блоке "Параметры рынка" до расчета параметров
+		doSmthWithMarketParamsBlock(true);
 
-	// Очистим ячеку со стоимостью опциона
-	ui.Opt_Line->clear();
+		// Разблокируем блок "Параметры алгоритма" и установим дефолтные параметры
+		doSmthWithAlgoParamsBlock(true);
+
+		// Очистим ячеку со стоимостью опциона
+		ui.Opt_Line->clear();
+	}
+	else
+	{
+		ui.parAutoWrite->setChecked(true);
+	}
 }
 
 void App::parHandWrite_checked()
 {
-	// Снимаем галку с режима "Ручной ввод"
-	ui.parAutoWrite->setChecked(false);
-
-	// Заблокируем и очистим строку пути к файлу, очистим переменную в которую пихался файл 
-	ui.filePathLine->clear();
-	ui.filePathLine->setEnabled(false);
-	if (!dataForParams.isEmpty())
+	if (ui.parAutoWrite->isChecked())
 	{
-		dataForParams.clear();
+		// Снимаем галку с режима "Ручной ввод"
+		ui.parAutoWrite->setChecked(false);
+
+		// Заблокируем и очистим строку пути к файлу, очистим переменную в которую пихался файл 
+		ui.filePathLine->clear();
+		ui.filePathLine->setEnabled(false);
+		if (!dataForParams.isEmpty())
+		{
+			dataForParams.clear();
+		}
+
+		// Заблокируем кнопки "Выберите файл" и "Расчет параметров",
+		// разблокируем кнопку "Расчет цены"
+		ui.getFileButton->setEnabled(false);
+		ui.getParametersButton->setEnabled(false);
+		ui.getCostButton->setEnabled(true);
+
+		// Очистим и разблокируем ячейки в блоке "Параметры рынка" до расчета параметров
+		doSmthWithMarketParamsBlock(false);
+
+		// Заблокируем блок "Параметры алгоритма"
+		doSmthWithAlgoParamsBlock(false);
+
+		// Очистим ячеку со стоимостью опциона
+		ui.Opt_Line->clear();
 	}
-
-	// Заблокируем кнопки "Выберите файл" и "Расчет параметров",
-	// разблокируем кнопку "Расчет цены"
-	ui.getFileButton->setEnabled(false);
-	ui.getParametersButton->setEnabled(false);
-	ui.getCostButton->setEnabled(true);
-
-	// Очистим и разблокируем ячейки в блоке "Параметры рынка" до расчета параметров
-	doSmthWithMarketParamsBlock(false);
-
-	// Заблокируем блок "Параметры алгоритма"
-	doSmthWithAlgoParamsBlock(false);
-
-	// Очистим ячеку со стоимостью опциона
-	ui.Opt_Line->clear();
+	else
+	{
+		ui.parHandWrite->setChecked(true);
+	}
 }
 
 void App::doSmthWithAlgoParamsBlock(bool b)

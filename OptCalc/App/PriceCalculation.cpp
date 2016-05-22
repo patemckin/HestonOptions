@@ -1,10 +1,12 @@
 #include "PriceCalculation.h"
 #pragma comment(lib, "fftw3.lib")
 
-double mypow(double a, int n) {
+double mypow(double a, int n)
+{
 	if ((int)a == -1)
+	{
 		return (int)a % 2 ? -1 : 1;
-	
+	}
 	double res = 1;
 	for (int i = 0; i < n; ++i){
 		res *= a;
