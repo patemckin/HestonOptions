@@ -25,10 +25,10 @@ public:
 
 	bool loadFile(const QString filePath);
 	bool checkFile();
-	Table getTable();
+	Table* getTable();
 
 private:
-	Matrix arr;
+	Matrix* arr;
 };
 
 #endif // FILE_WORKER_H

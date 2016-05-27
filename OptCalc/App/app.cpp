@@ -3,11 +3,68 @@
 App::App(QWidget *parent)
 	: QMainWindow(parent)
 {
+	// Загрузили UI
 	ui.setupUi(this);
+
+	// Сделали коннекты для слотов и сигналов
 	connect(ui.parAutoWrite, SIGNAL(triggered(bool)), this, SLOT(parAutoWrite_checked()));
 	connect(ui.parHandWrite, SIGNAL(triggered(bool)), this, SLOT(parHandWrite_checked()));
 	connect(ui.menuHelp, SIGNAL(triggered(bool)), this, SLOT(menuHelp_clicked()));
 
+	// Проинициализировали валидаторы и ересь для валидации
+	vldtrs[0] = new QDoubleValidator(0.0000001, 0.9999999, decimals, ui.v0_Line);
+	vldtrs[1] = new QDoubleValidator(0., 1., decimals, ui.theta_Line);
+	vldtrs[2] = new QDoubleValidator(0., 50., decimals, ui.kappa_Line);
+	vldtrs[3] = new QDoubleValidator(0.0000001, 0.9999999, decimals, ui.sigma_Line);
+	vldtrs[4] = new QDoubleValidator(-1., 1., decimals, ui.rho_Line);
+	vldtrs[5] = new QDoubleValidator(0.0000001, 100000., decimals, ui.S_Line);
+	vldtrs[6] = new QDoubleValidator(0.0000001, 100000., decimals, ui.K_Line);
+	vldtrs[7] = new QDoubleValidator(0., 1., decimals, ui.r_Line);
+	vldtrs[8] = new QDoubleValidator(0.0000001, 3., decimals, ui.T_Line);
+	ui.v0_Line->setValidator(vldtrs[0]);
+	ui.theta_Line->setValidator(vldtrs[1]);
+	ui.kappa_Line->setValidator(vldtrs[2]);
+	ui.sigma_Line->setValidator(vldtrs[3]);
+	ui.rho_Line->setValidator(vldtrs[4]);
+	ui.S_Line->setValidator(vldtrs[5]);
+	ui.K_Line->setValidator(vldtrs[6]);
+	ui.r_Line->setValidator(vldtrs[7]);
+	ui.T_Line->setValidator(vldtrs[8]);
+
+	vldtrsAlgo[0] = new QIntValidator(3, 250, ui.popSize_Line);
+	vldtrsAlgo[1] = new QIntValidator(1, 1000, ui.genCount_Line);
+	vldtrsAlgo[2] = new QDoubleValidator(0., 1., decimals, ui.crosProb_Line);
+	vldtrsAlgo[3] = new QDoubleValidator(0., 1., decimals, ui.mutProb_Line);
+	ui.popSize_Line->setValidator(vldtrsAlgo[0]);
+	ui.genCount_Line->setValidator(vldtrsAlgo[1]);
+	ui.crosProb_Line->setValidator(vldtrsAlgo[2]);
+	ui.mutProb_Line->setValidator(vldtrsAlgo[3]);
+
+	QLocale* loc = new QLocale(QLocale::English, QLocale::UnitedStates);
+	for (int i = 0; i < 9; i++)
+	{
+		vldtrs[i]->setLocale(*loc);
+	}
+	for (int i = 0; i < 4; i++)
+	{
+		vldtrsAlgo[i]->setLocale(*loc);
+	}
+
+	s = new QStringList();
+	*s << "S" << "K" << "r" << "T" << "v0" << "theta" << "kappa" << "sigma" << "rho";
+
+	sAlgo = new QStringList();
+	*sAlgo << QString::fromLocal8Bit("Размер популяции") << QString::fromLocal8Bit("Количество поколений") << 
+		QString::fromLocal8Bit("Вероятность мутации") << QString::fromLocal8Bit("Вероятность кроссовера");
+
+	lines = new QVector<QLineEdit* >();
+	*lines << ui.S_Line << ui.K_Line << ui.r_Line << ui.T_Line << ui.v0_Line << ui.theta_Line << ui.kappa_Line <<
+		ui.sigma_Line << ui.rho_Line;
+
+	linesAlgo = new QVector<QLineEdit* >();
+	*linesAlgo << ui.popSize_Line << ui.genCount_Line << ui.crosProb_Line << ui.mutProb_Line;
+
+	// Подгружаем help
 	QFile file("README.txt");
 	if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
 	{
@@ -32,6 +89,10 @@ void App::on_getFileButton_clicked()
 	{
 		ui.filePathLine->clear();
 		ui.filePathLine->insert(filePath);
+		if (!dataForParams)
+		{
+			delete dataForParams;
+		}
 		dataForParams = fw->getTable();
 		ui.getParametersButton->setEnabled(true);
 	}
@@ -46,66 +107,98 @@ void App::on_getParametersButton_clicked()
 	// Разрешим вносить изменения в параметры рынка после расчета
 	doSmthWithMarketParamsBlock(false);
 
-	// Считываем данные с юай
-	N = ui.N_SpinBox->text().toInt();
-	bool *b = new bool[4];
-	ap.popSize = ui.popSize_Line->text().toDouble(&b[0]);
-	ap.genCount = ui.genCount_Line->text().toDouble(&b[1]);
-	ap.crosProb = ui.crosProb_Line->text().toDouble(&b[2]);
-	ap.mutProb = ui.mutProb_Line->text().toDouble(&b[3]);
-
-	// Производим валидацию и вычисляем параметры с занесением их в Lines
-	if (!(b[0] && b[1] && b[2] && b[3]))
+	// Проводим валидацию и считываем данные
+	QString msg = "";
+	for (int i = 0; i < 4; i++)
 	{
+		if (!(*linesAlgo)[i]->hasAcceptableInput())
+		{
+			msg += sAlgo->at(i) + ", ";
+		}
+	}
+	msg.remove(msg.length() - 2, 2);
+
+	if (!msg.isEmpty())
+	{
+		msg += QString::fromLocal8Bit(" вне границ\n");
 		QMessageBox::StandardButton Load;
-		Load = QMessageBox::critical(this, QString::fromLocal8Bit("Ошибка"), QString::fromLocal8Bit("Параметры должны быть числами"), QMessageBox::Ok);
+		Load = QMessageBox::critical(this, QString::fromLocal8Bit("Ошибка"), msg, QMessageBox::Ok);
 	}
 	else
 	{
-		QString *s = new QString[4];
-		s[0] = QString::fromLocal8Bit("Размер популяции");
-		s[1] = QString::fromLocal8Bit("Количество поколений");
-		s[2] = QString::fromLocal8Bit("Вероятность мутации");
-		s[3] = QString::fromLocal8Bit("Вероятность кроссовера");
-		QString msg = "";
-		
-		b[0] = ap.popSize >= 3 & ap.popSize <= 250 ;
-		b[1] = ap.genCount >= 1 & ap.genCount <= 1000;
-		b[2] = ap.mutProb >= 0 & ap.mutProb <= 1;
-		b[3] = ap.crosProb >= 0 & ap.crosProb <= 1;
+		N = ui.N_SpinBox->text().toInt();
+		ap.popSize = ui.popSize_Line->text().toInt();
+		ap.genCount = ui.genCount_Line->text().toInt();
+		ap.crosProb = ui.crosProb_Line->text().toDouble();
+		ap.mutProb = ui.mutProb_Line->text().toDouble();
 
-		if (!(b[0] && b[1] && b[2] && b[3]))
+		GASolver solver(ap, N, dataForParams->toStdVector().data(), dataForParams->toStdVector().size(), this);
+		marketParams mp = solver.getMarketParams();
+
+		if (!GASolver::stop)
 		{
-			QString temp = "";
-			for (int j = 0; j < 4; j++)
-			{
-				if (!b[j])
-				{
-					temp += s[j] + ", ";
-				}
-			}
-			temp.remove(temp.length() - 2, 2);
-			msg += temp;
-			msg += QString::fromLocal8Bit(" вне границ\n");
-
-			QMessageBox::StandardButton Load;
-			Load = QMessageBox::critical(this, QString::fromLocal8Bit("Ошибка"), msg, QMessageBox::Ok);
-		}
-		else
-		{
-			GASolver solver(ap, N, dataForParams.toStdVector().data(), dataForParams.toStdVector().size(), this);
-			marketParams mp = solver.getMarketParams();
-
-			if (!GASolver::stop)
-			{
-				ui.kappa_Line->setText(QString::number(mp.kappa));
-				ui.theta_Line->setText(QString::number(mp.theta));
-				ui.v0_Line->setText(QString::number(mp.v0));
-				ui.sigma_Line->setText(QString::number(mp.sigma));
-				ui.rho_Line->setText(QString::number(mp.rho));
-			}
+			ui.kappa_Line->setText(QString::number(mp.kappa));
+			ui.theta_Line->setText(QString::number(mp.theta));
+			ui.v0_Line->setText(QString::number(mp.v0));
+			ui.sigma_Line->setText(QString::number(mp.sigma));
+			ui.rho_Line->setText(QString::number(mp.rho));
 		}
 	}
+
+	/*
+	// Считываем данные с юай
+	N = ui.N_SpinBox->text().toInt();
+	ap.popSize = ui.popSize_Line->text().toInt();
+	ap.genCount = ui.genCount_Line->text().toInt();
+	ap.crosProb = ui.crosProb_Line->text().toDouble();
+	ap.mutProb = ui.mutProb_Line->text().toDouble();
+
+	// Производим валидацию и вычисляем параметры с занесением их в Lines
+	bool *b = new bool[4];
+	QString *s = new QString[4];
+	s[0] = QString::fromLocal8Bit("Размер популяции");
+	s[1] = QString::fromLocal8Bit("Количество поколений");
+	s[2] = QString::fromLocal8Bit("Вероятность мутации");
+	s[3] = QString::fromLocal8Bit("Вероятность кроссовера");
+	QString msg = "";
+		
+	b[0] = ap.popSize >= 3 & ap.popSize <= 250 ;
+	b[1] = ap.genCount >= 1 & ap.genCount <= 1000;
+	b[2] = ap.mutProb >= 0 & ap.mutProb <= 1;
+	b[3] = ap.crosProb >= 0 & ap.crosProb <= 1;
+
+	if (!(b[0] && b[1] && b[2] && b[3]))
+	{
+		QString temp = "";
+		for (int j = 0; j < 4; j++)
+		{
+			if (!b[j])
+			{
+				temp += s[j] + ", ";
+			}
+		}
+		temp.remove(temp.length() - 2, 2);
+		msg += temp;
+		msg += QString::fromLocal8Bit(" вне границ\n");
+
+		QMessageBox::StandardButton Load;
+		Load = QMessageBox::critical(this, QString::fromLocal8Bit("Ошибка"), msg, QMessageBox::Ok);
+	}
+	else
+	{
+		GASolver solver(ap, N, dataForParams->toStdVector().data(), dataForParams->toStdVector().size(), this);
+		marketParams mp = solver.getMarketParams();
+
+		if (!GASolver::stop)
+		{
+			ui.kappa_Line->setText(QString::number(mp.kappa));
+			ui.theta_Line->setText(QString::number(mp.theta));
+			ui.v0_Line->setText(QString::number(mp.v0));
+			ui.sigma_Line->setText(QString::number(mp.sigma));
+			ui.rho_Line->setText(QString::number(mp.rho));
+		}
+	}
+	*/
 }
 
 void App::on_getCostButton_clicked()
@@ -123,72 +216,90 @@ void App::on_getCostButton_clicked()
 	double rho = -0.6;
 	***********************/
 
-	N = ui.N_SpinBox->text().toInt();
-	bool *b = new bool[9];
-	data.S = ui.S_Line->text().toDouble(&b[0]);
-	data.K = ui.K_Line->text().toDouble(&b[1]);
-	data.T = ui.T_Line->text().toDouble(&b[2]);
-	data.r = ui.r_Line->text().toDouble(&b[3]);
-	data.v0 = ui.v0_Line->text().toDouble(&b[4]);
-	data.theta = ui.theta_Line->text().toDouble(&b[5]);
-	data.kappa = ui.kappa_Line->text().toDouble(&b[6]);
-	data.sigma = ui.sigma_Line->text().toDouble(&b[7]);
-	data.rho = ui.rho_Line->text().toDouble(&b[8]);
-
-	if (!(b[0] && b[1] && b[2] && b[3] && b[4] && b[5] && b[6] && b[7] && b[8] && b[9]))
+	// Проводим валидацию и считываем данные
+	QString msg = "";
+	for (int i = 0; i < 9; i++)
 	{
+		if (!(*lines)[i]->hasAcceptableInput())
+		{
+			msg += s->at(i) + ", ";
+		}
+	}
+	msg.remove(msg.length() - 2, 2);
+
+	if (!msg.isEmpty())
+	{
+		msg += QString::fromLocal8Bit(" вне границ\n");
 		QMessageBox::StandardButton Load;
-		Load = QMessageBox::critical(this, QString::fromLocal8Bit("Ошибка"), QString::fromLocal8Bit("Параметры должны быть числами"), QMessageBox::Ok);
+		Load = QMessageBox::critical(this, QString::fromLocal8Bit("Ошибка"), msg, QMessageBox::Ok);
 	}
 	else
 	{
-		QString *s = new QString[9];
-		s[0] = "S";
-		s[1] = "K";
-		s[2] = "r";
-		s[3] = "T";
-		s[4] = "v0";
-		s[5] = "theta";
-		s[6] = "kappa";
-		s[7] = "sigma";
-		s[8] = "rho";
-		QString msg = "";
+		N = ui.N_SpinBox->text().toInt();
+		data.S = ui.S_Line->text().toDouble();
+		data.K = ui.K_Line->text().toDouble();
+		data.T = ui.T_Line->text().toDouble();
+		data.r = ui.r_Line->text().toDouble();
+		data.v0 = ui.v0_Line->text().toDouble();
+		data.theta = ui.theta_Line->text().toDouble();
+		data.kappa = ui.kappa_Line->text().toDouble();
+		data.sigma = ui.sigma_Line->text().toDouble();
+		data.rho = ui.rho_Line->text().toDouble();
 
-		b[0] = data.S > 0. & data.S <= 100000.;
-		b[1] = data.K > 0. & data.K <= 100000.;
-		b[2] = data.r >= 0. & data.r <= 1.;
-		b[3] = data.T > 0. & data.T <= 3.;
-		b[4] = data.v0 > 0. & data.v0 < 1.;
-		b[5] = data.theta >= 0. & data.theta <= 1.;
-		b[6] = data.kappa >= 0. & data.kappa <= 50.;
-		b[7] = data.sigma > 0. & data.sigma < 1.;
-		b[8] = data.rho >= -1. & data.rho <= 1.;
-
-		if (!(b[0] && b[1] && b[2] && b[3] && b[4] && b[5] && b[6] && b[7] && b[8]))
-		{
-			QString temp = "";
-			for (int j = 0; j < 9; j++)
-			{
-				if (!b[j])
-				{
-					temp += s[j] + ", ";
-				}
-			}
-			temp.remove(temp.length() - 2, 2);
-			msg += temp;
-			msg += QString::fromLocal8Bit(" вне границ\n");
-
-			QMessageBox::StandardButton Load;
-			Load = QMessageBox::critical(this, QString::fromLocal8Bit("Ошибка"), msg, QMessageBox::Ok);
-		}
-		else
-		{
-			double price = callPriceFFT(N, data.S, data.K, data.T, data.r, data.v0, data.theta, data.kappa, data.sigma, data.rho);
-			ui.Opt_Line->setText(QString::number(price));
-		}
-
-		delete b;
+		double price = callPriceFFT(N, data.S, data.K, data.T, data.r, data.v0, data.theta, data.kappa, data.sigma, data.rho);
+		ui.Opt_Line->setText(QString::number(price));
 	}
+
+	/*
+	N = ui.N_SpinBox->text().toInt();
+	data.S = ui.S_Line->text().toDouble();
+	data.K = ui.K_Line->text().toDouble();
+	data.T = ui.T_Line->text().toDouble();
+	data.r = ui.r_Line->text().toDouble();
+	data.v0 = ui.v0_Line->text().toDouble();
+	data.theta = ui.theta_Line->text().toDouble();
+	data.kappa = ui.kappa_Line->text().toDouble();
+	data.sigma = ui.sigma_Line->text().toDouble();
+	data.rho = ui.rho_Line->text().toDouble();
+
+	bool *b = new bool[9];
+	QString msg = "";
+
+	b[0] = data.S > 0. & data.S <= 100000.;
+	b[1] = data.K > 0. & data.K <= 100000.;
+	b[2] = data.r >= 0. & data.r <= 1.;
+	b[3] = data.T > 0. & data.T <= 3.;
+	b[4] = data.v0 > 0. & data.v0 < 1.;
+	b[5] = data.theta >= 0. & data.theta <= 1.;
+	b[6] = data.kappa >= 0. & data.kappa <= 50.;
+	b[7] = data.sigma > 0. & data.sigma < 1.;
+	b[8] = data.rho >= -1. & data.rho <= 1.;
+
+	if (!(b[0] && b[1] && b[2] && b[3] && b[4] && b[5] && b[6] && b[7] && b[8]))
+	{
+		QString temp = "";
+		for (int j = 0; j < 9; j++)
+		{
+			if (!b[j])
+			{
+				temp += s[j] + ", ";
+			}
+		}
+		temp.remove(temp.length() - 2, 2);
+		msg += temp;
+		msg += QString::fromLocal8Bit(" вне границ\n");
+
+		QMessageBox::StandardButton Load;
+		Load = QMessageBox::critical(this, QString::fromLocal8Bit("Ошибка"), msg, QMessageBox::Ok);
+	}
+	else
+	{
+		double price = callPriceFFT(N, data.S, data.K, data.T, data.r, data.v0, data.theta, data.kappa, data.sigma, data.rho);
+		ui.Opt_Line->setText(QString::number(price));
+	}
+
+	delete b;
+	*/
 }
 
 void App::parAutoWrite_checked()
@@ -230,9 +341,9 @@ void App::parHandWrite_checked()
 		// Заблокируем и очистим строку пути к файлу, очистим переменную в которую пихался файл 
 		ui.filePathLine->clear();
 		ui.filePathLine->setEnabled(false);
-		if (!dataForParams.isEmpty())
+		if (!dataForParams->isEmpty())
 		{
-			dataForParams.clear();
+			dataForParams->clear();
 		}
 
 		// Заблокируем кнопки "Выберите файл" и "Расчет параметров",

@@ -1,15 +1,16 @@
 #include "file_worker.h"
+#include <QDebug>
 
 
 FileWorker::FileWorker(QWidget *parent)
 	: QWidget(parent)
 {
-
+	arr = new QVector<QVector<double> >();
 }
 
 FileWorker::~FileWorker()
 {
-
+	delete arr;
 }
 
 bool FileWorker::checkFile()
@@ -23,16 +24,16 @@ bool FileWorker::checkFile()
 	s[5] = "r";
 	QString msg = "";
 
-	for (int i = 0; i < arr.size(); i++)
+	for (int i = 0; i < arr->size(); i++)
 	{
 		bool *b = new bool[6];
-		b[0] = arr[i][0] > 0. & arr[i][0] <= 3.;
-		b[1] = arr[i][1] > 0. & arr[i][1] <= 100000.;
-		b[4] = arr[i][4] > 0. & arr[i][4] <= 100000.;
-		double diff = abs(arr[i][1] - arr[i][4]);
-		b[2] = arr[i][2] >= 0.01 * diff & arr[i][2] <= 100. * diff; 
-		b[3] = arr[i][3] >= 0.01 * diff & arr[i][3] <= 100. * diff;
-		b[5] = arr[i][5] >= 0. & arr[i][5] <= 1.;
+		b[0] = (*arr)[i][0] > 0. & (*arr)[i][0] <= 3.;
+		b[1] = (*arr)[i][1] > 0. & (*arr)[i][1] <= 100000.;
+		b[4] = (*arr)[i][4] > 0. & (*arr)[i][4] <= 100000.;
+		double diff = abs((*arr)[i][1] - (*arr)[i][4]);
+		b[2] = (*arr)[i][2] >= 0.01 * diff & (*arr)[i][2] <= 100. * diff; 
+		b[3] = (*arr)[i][3] >= 0.01 * diff & (*arr)[i][3] <= 100. * diff;
+		b[5] = (*arr)[i][5] >= 0. & (*arr)[i][5] <= 1.;
 
 		if (!(b[0] && b[1] && b[2] && b[3] && b[4] && b[5]))
 		{
@@ -116,30 +117,28 @@ bool FileWorker::loadFile(const QString filePath)
 			temp.append(num);
 		}
 
-		arr.append(temp);
+		arr->append(temp);
 	}
 
 	return checkFile();
 }
 
-Table FileWorker::getTable()
+Table* FileWorker::getTable()
 {
-	Table res(arr.size());
+	Table* res = new QVector<optionParams>(arr->size());
 
-	for (int i = 0; i < arr.size(); i++)
+	for (int i = 0; i < arr->size(); i++)
 	{
-		res[i].S = arr[i][1];
-		res[i].K = arr[i][4];
-		res[i].T = arr[i][0];
-		res[i].r = arr[i][5];
-		res[i].price = (arr[i][3] + arr[i][2]) / 2;
-		res[i].bid = arr[i][2];
-		res[i].ask = arr[i][3];
+		(*res)[i].S = (*arr)[i][1];
+		(*res)[i].K = (*arr)[i][4];
+		(*res)[i].T = (*arr)[i][0];
+		(*res)[i].r = (*arr)[i][5];
+		(*res)[i].price = ((*arr)[i][3] + (*arr)[i][2]) / 2;
+		(*res)[i].bid = (*arr)[i][2];
+		(*res)[i].ask = (*arr)[i][3];
 
-		arr.at(i).~QVector();
+		//qDebug() << (*arr)[i][0] << (*arr)[i][1] << (*arr)[i][2] << (*arr)[i][3] << (*arr)[i][4] << (*arr)[i][5] << endl;
 	}
-
-	arr.~QVector();
 
 	return res;
 }

@@ -24,13 +24,21 @@ public:
 private:
 	Ui::AppClass ui;
 	QString filePath;
-	FileWorker * fw;
-	Table dataForParams;
+	FileWorker* fw;
+	Table* dataForParams = NULL;
 	PriceFunParams data;
 	marketParams mp;
 	AlgoParams ap;
 	unsigned int N;
 	QString help;
+
+	const int decimals = 7;
+	QValidator* vldtrs[9];
+	QValidator* vldtrsAlgo[4];
+	QStringList *s;
+	QStringList *sAlgo;
+	QVector<QLineEdit* > *lines;
+	QVector<QLineEdit* > *linesAlgo;
 
 	void doSmthWithAlgoParamsBlock(bool b);
 	void doSmthWithMarketParamsBlock(bool b);

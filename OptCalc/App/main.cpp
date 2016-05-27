@@ -1,8 +1,9 @@
 #include "app.h"
 #include <QtWidgets/QApplication>
+#include <QLibraryInfo>
 
 int main(int argc, char *argv[])
-{	
+{		
 	QApplication a(argc, argv);
 	App w;
 	w.show();
