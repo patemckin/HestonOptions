@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>App</string>
+   <string>Heston Option Calculator &amp; Calibrator</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QLineEdit" name="filePathLine">
