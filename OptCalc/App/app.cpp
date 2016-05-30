@@ -229,9 +229,11 @@ void App::on_getCostButton_clicked()
 
 	if (!msg.isEmpty())
 	{
-		msg += QString::fromLocal8Bit(" вне границ\n");
-		QMessageBox::StandardButton Load;
-		Load = QMessageBox::critical(this, QString::fromLocal8Bit("Ошибка"), msg, QMessageBox::Ok);
+		msg += QString::fromLocal8Bit(" вне границ\n ");
+
+		QMessageBox errorBox(QMessageBox::Critical, QString::fromLocal8Bit("Ошибка ввода"),msg,QMessageBox::Ok,this);
+		errorBox.setInformativeText(QString::fromLocal8Bit("Подробнее в Помощь - \"ГРАНИЦЫ ПАРАМЕТРОВ\""));
+		errorBox.exec();
 	}
 	else
 	{
@@ -424,6 +426,7 @@ void App::makeDialogWithString(const QString s)
 	QScrollArea *scroll = new QScrollArea(this);
 	QVBoxLayout *layout = new QVBoxLayout();
 
+	dialog->setWindowFlags(dialog->windowFlags() & ~Qt::WindowContextHelpButtonHint);
 	label->setText(s);
 	scroll->setWidget(label);
 	scroll->setWidgetResizable(true);

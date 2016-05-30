@@ -48,7 +48,7 @@ bool FileWorker::checkFile()
 			}
 			temp.remove(temp.length() - 2, 2);
 			msg += temp;
-			msg += QString::fromLocal8Bit(" вне границ\n");
+			msg += QString::fromLocal8Bit(" вне границ\n Подробнее в Помощь - \"ГРАНИЦЫ ПАРАМЕТРОВ\"");
 		}
 
 		delete(b);
